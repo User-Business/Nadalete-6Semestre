@@ -2,9 +2,11 @@ package com.example.AtlazDB.model;
 
 import jakarta.persistence.*;
 import com.example.AtlazDB.enums.*;
+import lombok.Data;
 
 @Entity
 @Table(name = "viatura")
+@Data
 public class Viatura {
 
     @Id
@@ -24,44 +26,4 @@ public class Viatura {
     @ManyToOne
     @JoinColumn(name = "id_modelo")
     private Modelo modelo;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getPrefixo() {
-        return prefixo;
-    }
-
-    public void setPrefixo(String prefixo) {
-        this.prefixo = prefixo;
-    }
-
-    public TipoViatura getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(TipoViatura tipo) {
-        this.tipo = tipo;
-    }
-
-    public ViaturaStatus getViaturaStatus() {
-        return viaturaStatus;
-    }
-
-    public void setViaturaStatus(ViaturaStatus viaturaStatus) {
-        this.viaturaStatus = viaturaStatus;
-    }
-
-    public Modelo getModelo() {
-        return modelo;
-    }
-
-    public void setModelo(Modelo modelo) {
-        this.modelo = modelo;
-    }
 }

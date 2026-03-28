@@ -1,11 +1,18 @@
 package com.example.AtlazDB.model;
 
 import jakarta.persistence.*;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import com.example.AtlazDB.enums.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "abastecimento")
+@Data
 public class Abastecimento {
 
     @Id
@@ -17,12 +24,12 @@ public class Abastecimento {
     private LocalDateTime dataHora;
 
     @Column(name = "km_atual")
-    private Double kmAtual;
+    private BigDecimal kmAtual;
 
-    private Double litros;
+    private BigDecimal litros;
 
     @Column(name = "valor_total")
-    private Double valorTotal;
+    private BigDecimal valorTotal;
 
     @Column(name = "tipo_combustivel")
     @Enumerated(EnumType.STRING)
@@ -49,100 +56,4 @@ public class Abastecimento {
     @ManyToOne
     @JoinColumn(name = "id_os")
     private OrdemServico ordemServico;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public LocalDateTime getDataHora() {
-        return dataHora;
-    }
-
-    public void setDataHora(LocalDateTime dataHora) {
-        this.dataHora = dataHora;
-    }
-
-    public Double getKmAtual() {
-        return kmAtual;
-    }
-
-    public void setKmAtual(Double kmAtual) {
-        this.kmAtual = kmAtual;
-    }
-
-    public Double getLitros() {
-        return litros;
-    }
-
-    public void setLitros(Double litros) {
-        this.litros = litros;
-    }
-
-    public Double getValorTotal() {
-        return valorTotal;
-    }
-
-    public void setValorTotal(Double valorTotal) {
-        this.valorTotal = valorTotal;
-    }
-
-    public TipoCombustivel getTipoCombustivel() {
-        return tipoCombustivel;
-    }
-
-    public void setTipoCombustivel(TipoCombustivel tipoCombustivel) {
-        this.tipoCombustivel = tipoCombustivel;
-    }
-
-    public String getNumeroNotaFiscal() {
-        return numeroNotaFiscal;
-    }
-
-    public void setNumeroNotaFiscal(String numeroNotaFiscal) {
-        this.numeroNotaFiscal = numeroNotaFiscal;
-    }
-
-    public String getObservacaoEstado() {
-        return observacaoEstado;
-    }
-
-    public void setObservacaoEstado(String observacaoEstado) {
-        this.observacaoEstado = observacaoEstado;
-    }
-
-    public Usuario getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
-    }
-
-    public Viatura getViatura() {
-        return viatura;
-    }
-
-    public void setViatura(Viatura viatura) {
-        this.viatura = viatura;
-    }
-
-    public Cidade getCidade() {
-        return cidade;
-    }
-
-    public void setCidade(Cidade cidade) {
-        this.cidade = cidade;
-    }
-
-    public OrdemServico getOrdemServico() {
-        return ordemServico;
-    }
-
-    public void setOrdemServico(OrdemServico ordemServico) {
-        this.ordemServico = ordemServico;
-    }
 }

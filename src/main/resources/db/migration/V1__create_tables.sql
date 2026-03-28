@@ -1,5 +1,5 @@
 CREATE TABLE usuario (
-                         id_usuario SERIAL PRIMARY KEY,
+                         id_usuario BIGSERIAL PRIMARY KEY,
                          nome VARCHAR(100) NOT NULL,
                          matricula VARCHAR(50) UNIQUE NOT NULL,
                          email VARCHAR(150) UNIQUE NOT NULL,
@@ -9,29 +9,29 @@ CREATE TABLE usuario (
 );
 
 CREATE TABLE cidade (
-                        id_cidade SERIAL PRIMARY KEY,
+                        id_cidade BIGSERIAL PRIMARY KEY,
                         nome VARCHAR(100) NOT NULL,
-                        uf CHAR(2) NOT NULL
+                        uf VARCHAR(2) NOT NULL
 );
 
 CREATE TABLE modelo (
-                        id_modelo SERIAL PRIMARY KEY,
+                        id_modelo BIGSERIAL PRIMARY KEY,
                         nome_modelo VARCHAR(100) NOT NULL,
                         nome_marca VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE viatura (
-                         id_viatura SERIAL PRIMARY KEY,
+                         id_viatura BIGSERIAL PRIMARY KEY,
                          prefixo VARCHAR(50) UNIQUE NOT NULL,
                          tipo VARCHAR(50) NOT NULL CHECK (tipo IN ('UTILITARIO', 'PASSEIO')),
                          viatura_status VARCHAR(20) DEFAULT 'ATIVO' CHECK (viatura_status IN ('ATIVO', 'INATIVO', 'MANUTENCAO')),
-                         id_modelo INTEGER NOT NULL,
+                         id_modelo BIGSERIAL NOT NULL,
                          CONSTRAINT fk_viatura_modelo FOREIGN KEY (id_modelo)
                              REFERENCES modelo (id_modelo) ON DELETE RESTRICT
 );
 
 CREATE TABLE ordem_servico (
-                               id_os SERIAL PRIMARY KEY,
+                               id_os BIGSERIAL PRIMARY KEY,
                                numero_os VARCHAR(50) UNIQUE NOT NULL,
                                tipo_servico VARCHAR(100) NOT NULL,
                                local_destino VARCHAR(150),
@@ -39,8 +39,8 @@ CREATE TABLE ordem_servico (
                                km_chegada NUMERIC(10, 2),
                                data_saida TIMESTAMP NOT NULL,
                                data_retorno TIMESTAMP,
-                               id_usuario INTEGER NOT NULL,
-                               id_viatura INTEGER NOT NULL,
+                               id_usuario BIGSERIAL NOT NULL,
+                               id_viatura BIGSERIAL NOT NULL,
                                CONSTRAINT fk_os_usuario FOREIGN KEY (id_usuario)
                                    REFERENCES usuario (id_usuario) ON DELETE RESTRICT,
                                CONSTRAINT fk_os_viatura FOREIGN KEY (id_viatura)
@@ -48,7 +48,7 @@ CREATE TABLE ordem_servico (
 );
 
 CREATE TABLE abastecimento (
-                               id_abastecimento SERIAL PRIMARY KEY,
+                               id_abastecimento BIGSERIAL PRIMARY KEY,
                                data_hora TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                                km_atual NUMERIC(10, 2) NOT NULL,
                                litros NUMERIC(10, 2) NOT NULL,
@@ -56,10 +56,10 @@ CREATE TABLE abastecimento (
                                tipo_combustivel VARCHAR(50) NOT NULL CHECK (tipo_combustivel IN ('GASOLINA', 'ETANOL', 'DIESEL', 'GNV')),
                                numero_nota_fiscal VARCHAR(100),
                                observacao_estado TEXT,
-                               id_usuario INTEGER NOT NULL,
-                               id_viatura INTEGER NOT NULL,
-                               id_cidade INTEGER NOT NULL,
-                               id_os INTEGER,
+                               id_usuario BIGSERIAL NOT NULL,
+                               id_viatura BIGSERIAL NOT NULL,
+                               id_cidade BIGSERIAL NOT NULL,
+                               id_os BIGSERIAL,
                                CONSTRAINT fk_abast_usuario FOREIGN KEY (id_usuario)
                                    REFERENCES usuario (id_usuario) ON DELETE RESTRICT,
                                CONSTRAINT fk_abast_viatura FOREIGN KEY (id_viatura)
