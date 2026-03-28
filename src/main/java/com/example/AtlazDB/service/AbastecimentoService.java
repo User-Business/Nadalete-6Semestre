@@ -1,5 +1,6 @@
 package com.example.AtlazDB.service;
 
+import com.example.AtlazDB.enums.TipoCombustivel;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
@@ -30,5 +31,26 @@ public class AbastecimentoService {
 
     public void deletar(Long id) {
         repository.deleteById(id);
+    }
+
+    public List<Abastecimento> buscarComFiltros(
+            TipoCombustivel tipoCombustivel,
+            Double valorTotal,
+            Double kmAtual
+    ) {
+
+        if (tipoCombustivel != null) {
+            return repository.findByTipoCombustivel(tipoCombustivel);
+        }
+
+        if (valorTotal != null) {
+            return repository.findByValorTotalGreaterThan(valorTotal);
+        }
+
+        if (kmAtual != null) {
+            return repository.findByKmAtualGreaterThan(kmAtual);
+        }
+
+        return repository.findAll();
     }
 }

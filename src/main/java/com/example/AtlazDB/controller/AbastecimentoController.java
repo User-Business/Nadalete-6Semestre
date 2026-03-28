@@ -1,5 +1,6 @@
 package com.example.AtlazDB.controller;
 
+import com.example.AtlazDB.enums.TipoCombustivel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -20,9 +21,14 @@ public class AbastecimentoController {
     }
 
     @GetMapping
-    public List<Abastecimento> listar() {
-        return service.listarTodos();
+    public List<Abastecimento> buscar(
+            @RequestParam(required = false) TipoCombustivel tipoCombustivel,
+            @RequestParam(required = false) Double valorTotal,
+            @RequestParam(required = false) Double kmAtual
+    ) {
+        return service.buscarComFiltros(tipoCombustivel, valorTotal, kmAtual);
     }
+
 
     @GetMapping("/csv")
     public ResponseEntity<byte[]> downloadCSV() {

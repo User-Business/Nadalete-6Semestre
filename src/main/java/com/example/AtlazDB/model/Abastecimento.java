@@ -1,5 +1,7 @@
 package com.example.AtlazDB.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -43,17 +45,21 @@ public class Abastecimento {
 
     @ManyToOne
     @JoinColumn(name = "id_usuario")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Usuario usuario;
 
     @ManyToOne
     @JoinColumn(name = "id_viatura")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Viatura viatura;
 
     @ManyToOne
     @JoinColumn(name = "id_cidade")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Cidade cidade;
 
     @ManyToOne
     @JoinColumn(name = "id_os")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private OrdemServico ordemServico;
 }
