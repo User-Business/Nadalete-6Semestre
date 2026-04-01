@@ -61,4 +61,14 @@ public class AbastecimentoController {
     public void deletar(@PathVariable Long id) {
         service.deletar(id);
     }
+
+    @GetMapping("/por-mes")
+    public ResponseEntity<List<Abastecimento>> buscarPorMes(
+            @RequestParam int mes,
+            @RequestParam int ano) {
+
+        List<Abastecimento> lista = service.buscarPorMesEAno(mes, ano);
+        return ResponseEntity.ok(lista);
+    }
+
 }

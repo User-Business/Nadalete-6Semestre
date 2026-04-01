@@ -2,6 +2,8 @@ package com.example.AtlazDB.service;
 
 import com.example.AtlazDB.enums.TipoCombustivel;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,4 +55,17 @@ public class AbastecimentoService {
 
         return repository.findAll();
     }
+
+    public List<Abastecimento> buscarPorMesEAno(int mes, int ano) {
+
+        LocalDateTime inicio = LocalDateTime.of(ano, mes, 1, 0, 0);
+
+        LocalDateTime fim = inicio
+                .withDayOfMonth(inicio.toLocalDate().lengthOfMonth())
+                .withHour(23).withMinute(59).withSecond(59);
+
+        return repository.buscarPorPeriodo(inicio, fim);
+    }
+
+
 }
