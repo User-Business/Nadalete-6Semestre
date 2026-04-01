@@ -1,5 +1,6 @@
 package com.example.AtlazDB.service;
 
+import com.example.AtlazDB.dto.CidadeRequestDTO;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
@@ -24,11 +25,21 @@ public class CidadeService {
         return repository.findById(id);
     }
 
-    public Cidade salvar(Cidade cidade) {
+    public Cidade salvar(CidadeRequestDTO dto) {
+        Cidade cidade = new Cidade();
+        cidade.setNome(dto.getNome());
+        cidade.setUf(dto.getUf());
         return repository.save(cidade);
     }
 
     public void deletar(Long id) {
         repository.deleteById(id);
+    }
+
+    public Cidade atualizar(Long id, CidadeRequestDTO dto) {
+        Cidade cidade = repository.findById(id).orElseThrow(()-> new RuntimeException("Cidade não encontrada"));
+        cidade.setNome(dto.getNome());
+        cidade.setUf(dto.getUf());
+        return repository.save(cidade);
     }
 }

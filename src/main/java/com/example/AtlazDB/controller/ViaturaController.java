@@ -1,5 +1,6 @@
 package com.example.AtlazDB.controller;
 
+import com.example.AtlazDB.dto.ViaturaRequestDTO;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -27,14 +28,13 @@ public class ViaturaController {
     }
 
     @PostMapping
-    public Viatura criar(@RequestBody Viatura viatura) {
-        return service.salvar(viatura);
+    public Viatura criar(@RequestBody ViaturaRequestDTO dto) {
+        return service.salvar(dto);
     }
 
     @PutMapping("/{id}")
-    public Viatura atualizar(@PathVariable Long id, @RequestBody Viatura viatura) {
-        viatura.setId(id);
-        return service.salvar(viatura);
+    public Viatura atualizar(@PathVariable Long id, @RequestBody ViaturaRequestDTO dto) {
+        return service.atualizar(id, dto);
     }
 
     @DeleteMapping("/{id}")

@@ -1,5 +1,6 @@
 package com.example.AtlazDB.controller;
 
+import com.example.AtlazDB.dto.AbastecimentoRequestDTO;
 import com.example.AtlazDB.enums.TipoCombustivel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -47,14 +48,13 @@ public class AbastecimentoController {
     }
 
     @PostMapping
-    public Abastecimento criar(@RequestBody Abastecimento abastecimento) {
-        return service.salvar(abastecimento);
+    public Abastecimento criar(@RequestBody AbastecimentoRequestDTO dto) {
+        return service.salvar(dto);
     }
 
     @PutMapping("/{id}")
-    public Abastecimento atualizar(@PathVariable Long id, @RequestBody Abastecimento abastecimento) {
-        abastecimento.setId(id);
-        return service.salvar(abastecimento);
+    public Abastecimento atualizar(@PathVariable Long id, @RequestBody AbastecimentoRequestDTO dto) {
+        return service.atualizar(id,dto);
     }
 
     @DeleteMapping("/{id}")

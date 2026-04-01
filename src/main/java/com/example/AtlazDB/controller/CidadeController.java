@@ -1,5 +1,6 @@
 package com.example.AtlazDB.controller;
 
+import com.example.AtlazDB.dto.CidadeRequestDTO;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -27,14 +28,13 @@ public class CidadeController {
     }
 
     @PostMapping
-    public Cidade criar(@RequestBody Cidade cidade) {
-        return service.salvar(cidade);
+    public Cidade criar(@RequestBody CidadeRequestDTO dto) {
+        return service.salvar(dto);
     }
 
     @PutMapping("/{id}")
-    public Cidade atualizar(@PathVariable Long id, @RequestBody Cidade cidade) {
-        cidade.setId(id);
-        return service.salvar(cidade);
+    public Cidade atualizar(@PathVariable Long id, @RequestBody CidadeRequestDTO dto) {
+        return service.atualizar(id,dto);
     }
 
     @DeleteMapping("/{id}")

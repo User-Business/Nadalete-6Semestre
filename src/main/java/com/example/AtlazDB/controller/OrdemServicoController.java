@@ -1,5 +1,6 @@
 package com.example.AtlazDB.controller;
 
+import com.example.AtlazDB.dto.OrdemServicoRequestDTO;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -27,14 +28,13 @@ public class OrdemServicoController {
     }
 
     @PostMapping
-    public OrdemServico criar(@RequestBody OrdemServico os) {
-        return service.salvar(os);
+    public OrdemServico criar(@RequestBody OrdemServicoRequestDTO dto) {
+        return service.salvar(dto);
     }
 
     @PutMapping("/{id}")
-    public OrdemServico atualizar(@PathVariable Long id, @RequestBody OrdemServico os) {
-        os.setId(id);
-        return service.salvar(os);
+    public OrdemServico atualizar(@PathVariable Long id, @RequestBody OrdemServicoRequestDTO dto) {
+        return service.atualizar(id,dto);
     }
 
     @DeleteMapping("/{id}")

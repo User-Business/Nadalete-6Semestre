@@ -1,5 +1,6 @@
 package com.example.AtlazDB.controller;
 
+import com.example.AtlazDB.dto.UsuarioRequestDTO;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -27,14 +28,13 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public Usuario criar(@RequestBody Usuario usuario) {
-        return service.salvar(usuario);
+    public Usuario criar(@RequestBody UsuarioRequestDTO dto) {
+        return service.salvar(dto);
     }
 
     @PutMapping("/{id}")
-    public Usuario atualizar(@PathVariable Long id, @RequestBody Usuario usuario) {
-        usuario.setId(id);
-        return service.salvar(usuario);
+    public Usuario atualizar(@PathVariable Long id, @RequestBody UsuarioRequestDTO dto) {
+        return service.atualizar(id,dto);
     }
 
     @DeleteMapping("/{id}")

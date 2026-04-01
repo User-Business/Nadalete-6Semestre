@@ -7,5 +7,4 @@ import java.util.Optional;
 
 public interface OrdemServicoRepository extends JpaRepository<OrdemServico, Long> {
 
-    Optional<OrdemServico> findByNumeroOs(String numeroOs);
 }

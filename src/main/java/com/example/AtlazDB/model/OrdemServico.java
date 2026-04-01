@@ -1,5 +1,6 @@
 package com.example.AtlazDB.model;
 
+import com.example.AtlazDB.enums.TipoOcorrencia;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -16,14 +17,21 @@ public class OrdemServico {
     @Column(name = "id_os")
     private Long id;
 
-    @Column(name = "numero_os")
-    private String numeroOs;
+//    @Column(name = "numero_os")
+//    private String numeroOs;
 
     @Column(name = "tipo_servico")
-    private String tipoServico;
+    @Enumerated(EnumType.STRING)
+    private TipoOcorrencia tipoServico;
 
     @Column(name = "local_destino")
     private String localDestino;
+
+    @Column(name = "justificativa")
+    private String justificativa;
+
+    @Column(name = "requisitante")
+    private String requisitante;
 
     @Column(name = "km_saida")
     private BigDecimal kmSaida;

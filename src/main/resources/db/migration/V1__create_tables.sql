@@ -25,22 +25,24 @@ CREATE TABLE viatura (
                          prefixo VARCHAR(50) UNIQUE NOT NULL,
                          tipo VARCHAR(50) NOT NULL CHECK (tipo IN ('UTILITARIO', 'PASSEIO')),
                          viatura_status VARCHAR(20) DEFAULT 'ATIVO' CHECK (viatura_status IN ('ATIVO', 'INATIVO', 'MANUTENCAO')),
-                         id_modelo BIGSERIAL NOT NULL,
+                         id_modelo BIGINT NOT NULL,
                          CONSTRAINT fk_viatura_modelo FOREIGN KEY (id_modelo)
                              REFERENCES modelo (id_modelo) ON DELETE RESTRICT
 );
 
 CREATE TABLE ordem_servico (
                                id_os BIGSERIAL PRIMARY KEY,
-                               numero_os VARCHAR(50) UNIQUE NOT NULL,
+--                                numero_os VARCHAR(50) UNIQUE NOT NULL,
                                tipo_servico VARCHAR(100) NOT NULL,
                                local_destino VARCHAR(150),
+                               justificativa VARCHAR(255),
+                               requisitante VARCHAR(100),
                                km_saida NUMERIC(10, 2) NOT NULL,
                                km_chegada NUMERIC(10, 2),
                                data_saida TIMESTAMP NOT NULL,
                                data_retorno TIMESTAMP,
-                               id_usuario BIGSERIAL NOT NULL,
-                               id_viatura BIGSERIAL NOT NULL,
+                               id_usuario BIGINT NOT NULL,
+                               id_viatura BIGINT NOT NULL,
                                CONSTRAINT fk_os_usuario FOREIGN KEY (id_usuario)
                                    REFERENCES usuario (id_usuario) ON DELETE RESTRICT,
                                CONSTRAINT fk_os_viatura FOREIGN KEY (id_viatura)
@@ -50,16 +52,16 @@ CREATE TABLE ordem_servico (
 CREATE TABLE abastecimento (
                                id_abastecimento BIGSERIAL PRIMARY KEY,
                                data_hora TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                               km_atual NUMERIC(10, 2) NOT NULL,
+                               km_atual NUMERIC(10, 2),
                                litros NUMERIC(10, 2) NOT NULL,
                                valor_total NUMERIC(10, 2) NOT NULL,
-                               tipo_combustivel VARCHAR(50) NOT NULL CHECK (tipo_combustivel IN ('GASOLINA', 'ETANOL', 'DIESEL', 'GNV')),
-                               numero_nota_fiscal VARCHAR(100),
+                               tipo_combustivel VARCHAR(50) CHECK (tipo_combustivel IN ('GASOLINA', 'ETANOL', 'DIESEL', 'GNV')),
+                               numero_nota_fiscal VARCHAR(100) NOT NULL,
                                observacao_estado TEXT,
-                               id_usuario BIGSERIAL NOT NULL,
-                               id_viatura BIGSERIAL NOT NULL,
-                               id_cidade BIGSERIAL NOT NULL,
-                               id_os BIGSERIAL,
+                               id_usuario BIGINT NOT NULL,
+                               id_viatura BIGINT NOT NULL,
+                               id_cidade BIGINT NOT NULL,
+                               id_os BIGINT,
                                CONSTRAINT fk_abast_usuario FOREIGN KEY (id_usuario)
                                    REFERENCES usuario (id_usuario) ON DELETE RESTRICT,
                                CONSTRAINT fk_abast_viatura FOREIGN KEY (id_viatura)

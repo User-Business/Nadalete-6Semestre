@@ -1,20 +1,28 @@
 package com.example.AtlazDB.service;
 
+import com.example.AtlazDB.dto.AbastecimentoRequestDTO;
 import com.example.AtlazDB.enums.TipoCombustivel;
+import com.example.AtlazDB.model.*;
+import com.example.AtlazDB.repository.*;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
-
-import com.example.AtlazDB.model.Abastecimento;
-import com.example.AtlazDB.repository.AbastecimentoRepository;
 
 @Service
 public class AbastecimentoService {
 
     private final AbastecimentoRepository repository;
+    private final UsuarioRepository usuarioRepository;
+    private final ViaturaRepository viaturaRepository;
+    private final CidadeRepository cidadeRepository;
+    private final OrdemServicoRepository ordemServicoRepository;
 
-    public AbastecimentoService(AbastecimentoRepository repository) {
+    public AbastecimentoService(AbastecimentoRepository repository, UsuarioRepository usuarioRepository, ViaturaRepository viaturaRepository, CidadeRepository cidadeRepository, OrdemServicoRepository ordemServicoRepository) {
         this.repository = repository;
+        this.usuarioRepository = usuarioRepository;
+        this.viaturaRepository = viaturaRepository;
+        this.cidadeRepository = cidadeRepository;
+        this.ordemServicoRepository = ordemServicoRepository;
     }
 
     public List<Abastecimento> listarTodos() {
@@ -25,7 +33,23 @@ public class AbastecimentoService {
         return repository.findById(id);
     }
 
-    public Abastecimento salvar(Abastecimento abastecimento) {
+    public Abastecimento salvar(AbastecimentoRequestDTO dto) {
+        Usuario usuario = usuarioRepository.findById(dto.getIdUsuario()).orElseThrow(()-> new RuntimeException("Usuario não encontrado."));
+        Viatura viatura = viaturaRepository.findById(dto.getIdViatura()).orElseThrow(()-> new RuntimeException("Viatura não encontrada."));
+        Cidade cidade = cidadeRepository.findById(dto.getIdCidade()).orElseThrow(()-> new RuntimeException("Cidade não encontrada."));
+        OrdemServico os = ordemServicoRepository.findById(dto.getIdOs()).orElseThrow(()-> new RuntimeException("Ordem de serviço não encontrada."));
+
+        Abastecimento abastecimento = new Abastecimento();
+        abastecimento.setValorTotal(dto.getValorTotal());
+        abastecimento.setKmAtual(os.getKmChegada());
+        abastecimento.setLitros(dto.getLitros());
+        abastecimento.setDataHora(dto.getDataHora());
+        abastecimento.setNumeroNotaFiscal(dto.getNumeroNotaFiscal());
+        abastecimento.setUsuario(usuario);
+        abastecimento.setViatura(viatura);
+        abastecimento.setCidade(cidade);
+        abastecimento.setOrdemServico(os);
+
         return repository.save(abastecimento);
     }
 
@@ -52,5 +76,27 @@ public class AbastecimentoService {
         }
 
         return repository.findAll();
+    }
+
+    public Abastecimento atualizar(Long id, AbastecimentoRequestDTO dto) {
+        Usuario usuario = usuarioRepository.findById(dto.getIdUsuario()).orElseThrow(()-> new RuntimeException("Usuario não encontrado."));
+        Viatura viatura = viaturaRepository.findById(dto.getIdViatura()).orElseThrow(()-> new RuntimeException("Viatura não encontrada."));
+        Cidade cidade = cidadeRepository.findById(dto.getIdCidade()).orElseThrow(()-> new RuntimeException("Cidade não encontrada."));
+        Abastecimento abastecimento = repository.findById(id).orElseThrow(()-> new RuntimeException("Abastecimento não encontrado."));
+        OrdemServico os = ordemServicoRepository.findById(dto.getIdOs()).orElseThrow(()-> new RuntimeException("Ordem de serviço não encontrada."));
+
+
+        abastecimento.setValorTotal(dto.getValorTotal());
+        abastecimento.setKmAtual(os.getKmChegada());
+        abastecimento.setLitros(dto.getLitros());
+        abastecimento.setDataHora(dto.getDataHora());
+        abastecimento.setNumeroNotaFiscal(dto.getNumeroNotaFiscal());
+        abastecimento.setUsuario(usuario);
+        abastecimento.setViatura(viatura);
+        abastecimento.setCidade(cidade);
+        abastecimento.setOrdemServico(os);
+
+        return repository.save(abastecimento);
+
     }
 }

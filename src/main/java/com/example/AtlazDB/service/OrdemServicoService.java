@@ -1,5 +1,10 @@
 package com.example.AtlazDB.service;
 
+import com.example.AtlazDB.dto.OrdemServicoRequestDTO;
+import com.example.AtlazDB.model.Usuario;
+import com.example.AtlazDB.model.Viatura;
+import com.example.AtlazDB.repository.UsuarioRepository;
+import com.example.AtlazDB.repository.ViaturaRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
@@ -11,9 +16,13 @@ import com.example.AtlazDB.repository.OrdemServicoRepository;
 public class OrdemServicoService {
 
     private final OrdemServicoRepository repository;
+    private final UsuarioRepository usuarioRepository;
+    private final ViaturaRepository viaturaRepository;
 
-    public OrdemServicoService(OrdemServicoRepository repository) {
+    public OrdemServicoService(OrdemServicoRepository repository, UsuarioRepository usuarioRepository, ViaturaRepository viaturaRepository) {
         this.repository = repository;
+        this.usuarioRepository = usuarioRepository;
+        this.viaturaRepository = viaturaRepository;
     }
 
     public List<OrdemServico> listarTodos() {
@@ -24,11 +33,43 @@ public class OrdemServicoService {
         return repository.findById(id);
     }
 
-    public OrdemServico salvar(OrdemServico os) {
+    public OrdemServico salvar(OrdemServicoRequestDTO dto) {
+        Usuario usuario = usuarioRepository.findById(dto.getIdUsuario()).orElseThrow(()->new RuntimeException("Usuario não encontrado!"));
+        Viatura viatura = viaturaRepository.findById(dto.getIdViatura()).orElseThrow(()->new RuntimeException("Viatura não encontrada!"));
+
+        OrdemServico os = new OrdemServico();
+        os.setTipoServico(dto.getTipoServico());
+        os.setLocalDestino(dto.getLocalDestino());
+        os.setJustificativa(dto.getJustificativa());
+        os.setRequisitante(dto.getRequisitante());
+        os.setKmSaida(dto.getKmSaida());
+        os.setKmChegada(dto.getKmChegada());
+        os.setDataSaida(dto.getDataSaida());
+        os.setDataRetorno(dto.getDataRetorno());
+        os.setUsuario(usuario);
+        os.setViatura(viatura);
         return repository.save(os);
     }
 
     public void deletar(Long id) {
         repository.deleteById(id);
+    }
+
+    public OrdemServico atualizar(Long id, OrdemServicoRequestDTO dto) {
+        OrdemServico ordemServico = repository.findById(id).orElseThrow(()-> new RuntimeException("Ordem de Serviço não encontrada!"));
+        Usuario usuario = usuarioRepository.findById(dto.getIdUsuario()).orElseThrow(()->new RuntimeException("Usuario não encontrado!"));
+        Viatura viatura = viaturaRepository.findById(dto.getIdViatura()).orElseThrow(()->new RuntimeException("Viatura não encontrada!"));
+
+        ordemServico.setTipoServico(dto.getTipoServico());
+        ordemServico.setLocalDestino(dto.getLocalDestino());
+        ordemServico.setJustificativa(dto.getJustificativa());
+        ordemServico.setRequisitante(dto.getRequisitante());
+        ordemServico.setKmSaida(dto.getKmSaida());
+        ordemServico.setKmChegada(dto.getKmChegada());
+        ordemServico.setDataSaida(dto.getDataSaida());
+        ordemServico.setDataRetorno(dto.getDataRetorno());
+        ordemServico.setUsuario(usuario);
+        ordemServico.setViatura(viatura);
+        return repository.save(ordemServico);
     }
 }
