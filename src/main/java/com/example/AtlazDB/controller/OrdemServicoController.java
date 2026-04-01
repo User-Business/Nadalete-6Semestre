@@ -1,6 +1,7 @@
 package com.example.AtlazDB.controller;
 
 import com.example.AtlazDB.dto.OrdemServicoRequestDTO;
+import com.example.AtlazDB.enums.TipoOcorrencia;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -20,6 +21,11 @@ public class OrdemServicoController {
     @GetMapping
     public List<OrdemServico> listar() {
         return service.listarTodos();
+    }
+
+    @GetMapping("/tipos-ocorrencia")
+    public TipoOcorrencia[] listarTipos() {
+        return TipoOcorrencia.values();
     }
 
     @GetMapping("/{id}")
