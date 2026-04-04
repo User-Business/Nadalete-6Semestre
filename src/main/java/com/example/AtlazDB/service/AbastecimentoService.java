@@ -104,10 +104,7 @@ public class AbastecimentoService {
     public List<Abastecimento> buscarPorMesEAno(int mes, int ano) {
 
         LocalDateTime inicio = LocalDateTime.of(ano, mes, 1, 0, 0);
-
-        LocalDateTime fim = inicio
-                .withDayOfMonth(inicio.toLocalDate().lengthOfMonth())
-                .withHour(23).withMinute(59).withSecond(59);
+        LocalDateTime fim = inicio.plusMonths(1); // início do mês seguinte, exclusive
 
         return repository.buscarPorPeriodo(inicio, fim);
     }

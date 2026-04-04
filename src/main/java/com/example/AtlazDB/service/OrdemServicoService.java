@@ -6,6 +6,8 @@ import com.example.AtlazDB.model.Viatura;
 import com.example.AtlazDB.repository.UsuarioRepository;
 import com.example.AtlazDB.repository.ViaturaRepository;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,6 +33,12 @@ public class OrdemServicoService {
 
     public Optional<OrdemServico> buscarPorId(Long id) {
         return repository.findById(id);
+    }
+
+    public List<OrdemServico> buscarPorMesEAno(int mes, int ano) {
+        LocalDateTime inicio = LocalDateTime.of(ano, mes, 1, 0, 0);
+        LocalDateTime fim = inicio.plusMonths(1);
+        return repository.buscarPorPeriodo(inicio, fim);
     }
 
     public OrdemServico salvar(OrdemServicoRequestDTO dto) {

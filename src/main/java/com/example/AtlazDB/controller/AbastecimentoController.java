@@ -14,11 +14,11 @@ import com.example.AtlazDB.service.AbastecimentoService;
 public class AbastecimentoController {
 
     private final AbastecimentoService service;
-    private final GerarCsv gerarCsv;
+//    private final GerarCsv gerarCsv;
 
     public AbastecimentoController(AbastecimentoService service, GerarCsv gerarCsv) {
         this.service = service;
-        this.gerarCsv = gerarCsv;
+//        this.gerarCsv = gerarCsv;
     }
 
     @GetMapping
@@ -31,16 +31,16 @@ public class AbastecimentoController {
     }
 
 
-    @GetMapping("/csv")
-    public ResponseEntity<byte[]> downloadCSV() {
-
-        byte[] csvBytes = gerarCsv.gerarCSV();
-
-        return ResponseEntity.ok()
-                .header("Content-Disposition", "attachment; filename=abastecimento.csv")
-                .header("Content-Type", "text/csv")
-                .body(csvBytes);
-    }
+//    @GetMapping("/csv")
+//    public ResponseEntity<byte[]> downloadCSV() {
+//
+//        byte[] csvBytes = gerarCsv.gerarCSV();
+//
+//        return ResponseEntity.ok()
+//                .header("Content-Disposition", "attachment; filename=abastecimento.csv")
+//                .header("Content-Type", "text/csv")
+//                .body(csvBytes);
+//    }
 
     @GetMapping("/{id}")
     public Abastecimento buscarPorId(@PathVariable Long id) {

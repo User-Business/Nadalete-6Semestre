@@ -17,9 +17,8 @@ public interface AbastecimentoRepository extends JpaRepository<Abastecimento, Lo
 
     List<Abastecimento> findByKmAtualGreaterThan(Double kmAtual);
 
-    @Query("SELECT a FROM Abastecimento a WHERE a.dataHora BETWEEN :inicio AND :fim")
+    @Query("SELECT a FROM Abastecimento a WHERE a.dataHora >= :inicio AND a.dataHora < :fim")
     List<Abastecimento> buscarPorPeriodo(
             @Param("inicio") LocalDateTime inicio,
             @Param("fim") LocalDateTime fim);
-
 }
