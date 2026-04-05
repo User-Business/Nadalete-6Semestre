@@ -8,8 +8,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -27,6 +30,7 @@ class AbastecimentoControllerTest {
     @Autowired private ViaturaRepository viaturaRepository;
     @Autowired private CidadeRepository cidadeRepository;
     @Autowired private OrdemServicoRepository ordemServicoRepository;
+    @Autowired private AbastecimentoRepository abastecimentoRepository;
 
     private Long idUsuario;
     private Long idViatura;
@@ -36,6 +40,7 @@ class AbastecimentoControllerTest {
     @BeforeEach
     void setup() {
         // limpa na ordem certa por causa das FK
+        abastecimentoRepository.deleteAll();
         ordemServicoRepository.deleteAll();
         cidadeRepository.deleteAll();
         viaturaRepository.deleteAll();
@@ -96,5 +101,72 @@ class AbastecimentoControllerTest {
                         }
                         """.formatted(idUsuario, idViatura, idCidade, idOs)))
                 .andExpect(status().isOk());
+    }
+    @Test
+    void deveBuscarAbastecimentosPorMes() throws Exception {
+        mockMvc.perform(post("/abastecimentos")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+            {
+                "dataHora": "2026-04-02T17:36:17",
+                "litros": 1,
+                "valorTotal": 1,
+                "numeroNotaFiscal": "teste",
+                "idUsuario": %d,
+                "idViatura": %d,
+                "idCidade": %d,
+                "idOs": %d
+            }
+            """.formatted(idUsuario, idViatura, idCidade, idOs)));
+
+        mockMvc.perform(get("/abastecimentos/por-mes")
+                        .param("mes", "4")
+                        .param("ano", "2026"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()").value(1));
+    }
+
+    @Test
+    void deveRetornarListaVaziaParaMesSemAbastecimento() throws Exception {
+        mockMvc.perform(get("/abastecimentos/por-mes")
+                        .param("mes", "1")
+                        .param("ano", "2000"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()").value(0));
+    }
+
+    @Test
+    void deveListarTiposOcorrencia() throws Exception {
+        mockMvc.perform(get("/ordens-servico/tipos-ocorrencia"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$[0]").value("ADMINISTRATIVO"));
+    }
+
+    @Test
+    void deveListarViaturas() throws Exception {
+        mockMvc.perform(get("/viaturas"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$[0].prefixo").value("US01"));
+    }
+
+    @Test
+    void deveGerarCsvCompleto() throws Exception {
+        mockMvc.perform(get("/ordens-servico/csv"))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Content-Type", "text/csv; charset=UTF-8"))
+                .andExpect(header().exists("Content-Disposition"));
+    }
+
+    @Test
+    void deveGerarCsvFiltradoPorMes() throws Exception {
+        mockMvc.perform(get("/ordens-servico/csv")
+                        .param("mes", "4")
+                        .param("ano", "2026"))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Content-Type", "text/csv; charset=UTF-8"));
     }
 }
