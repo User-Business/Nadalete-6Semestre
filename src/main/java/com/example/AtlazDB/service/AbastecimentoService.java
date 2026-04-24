@@ -1,9 +1,11 @@
 package com.example.AtlazDB.service;
 
 import com.example.AtlazDB.dto.AbastecimentoRequestDTO;
+import com.example.AtlazDB.dto.AbastecimentoResponseDTO;
 import com.example.AtlazDB.enums.TipoCombustivel;
 import com.example.AtlazDB.model.*;
 import com.example.AtlazDB.repository.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -109,5 +111,11 @@ public class AbastecimentoService {
         return repository.buscarPorPeriodo(inicio, fim);
     }
 
+    public List<AbastecimentoResponseDTO> listar() {
+        List<Abastecimento> lista = repository.findAll();
 
+        return lista.stream()
+                .map(AbastecimentoResponseDTO::fromEntity)
+                .toList();
+    }
 }

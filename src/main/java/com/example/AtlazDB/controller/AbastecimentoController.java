@@ -1,7 +1,9 @@
 package com.example.AtlazDB.controller;
 
 import com.example.AtlazDB.dto.AbastecimentoRequestDTO;
+import com.example.AtlazDB.dto.AbastecimentoResponseDTO;
 import com.example.AtlazDB.enums.TipoCombustivel;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -69,6 +71,11 @@ public class AbastecimentoController {
 
         List<Abastecimento> lista = service.buscarPorMesEAno(mes, ano);
         return ResponseEntity.ok(lista);
+    }
+
+    @GetMapping("/dto")
+    public List<AbastecimentoResponseDTO> listarDTO() {
+        return service.listar();
     }
 
 }
