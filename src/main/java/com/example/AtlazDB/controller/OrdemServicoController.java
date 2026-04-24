@@ -1,6 +1,7 @@
 package com.example.AtlazDB.controller;
 
 import com.example.AtlazDB.dto.OrdemServicoRequestDTO;
+import com.example.AtlazDB.dto.OrdemServicoResponseDTO;
 import com.example.AtlazDB.enums.TipoOcorrencia;
 import com.example.AtlazDB.model.Abastecimento;
 import com.example.AtlazDB.repository.AbastecimentoRepository;
@@ -9,6 +10,7 @@ import com.example.AtlazDB.service.GerarCsv;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 import com.example.AtlazDB.model.OrdemServico;
@@ -31,34 +33,47 @@ public class OrdemServicoController {
     }
 
     @GetMapping
-    public List<OrdemServico> listar() {
-        return service.listarTodos();
+    public ResponseEntity<List<OrdemServicoResponseDTO>> listar() {
+        List<OrdemServico> lista = service.listarTodos();
+        
+        List<OrdemServicoResponseDTO> dtoLista = lista.stream()
+                .map(OrdemServicoResponseDTO::new)
+                .toList();
+                
+        return ResponseEntity.ok(dtoLista);
     }
 
     @GetMapping("/tipos-ocorrencia")
-    public TipoOcorrencia[] listarTipos() {
-        return TipoOcorrencia.values();
+    public ResponseEntity<TipoOcorrencia[]> listarTipos() {
+        return ResponseEntity.ok(TipoOcorrencia.values());
     }
 
     @GetMapping("/{id}")
-    public OrdemServico buscarPorId(@PathVariable Long id) {
-        return service.buscarPorId(id).orElse(null);
+    public ResponseEntity<OrdemServicoResponseDTO> buscarPorId(@PathVariable Long id) {
+        return service.buscarPorId(id)
+                .map(OrdemServicoResponseDTO::new)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public OrdemServico criar(@RequestBody OrdemServicoRequestDTO dto) {
-        return service.salvar(dto);
+    public ResponseEntity<OrdemServicoResponseDTO> criar(@RequestBody OrdemServicoRequestDTO dto) {
+        OrdemServico salvo = service.salvar(dto);
+        return ResponseEntity.ok(new OrdemServicoResponseDTO(salvo));
     }
 
     @PutMapping("/{id}")
-    public OrdemServico atualizar(@PathVariable Long id, @RequestBody OrdemServicoRequestDTO dto) {
-        return service.atualizar(id,dto);
+    public ResponseEntity<OrdemServicoResponseDTO> atualizar(@PathVariable Long id, @RequestBody OrdemServicoRequestDTO dto) {
+        OrdemServico atualizado = service.atualizar(id, dto);
+        return ResponseEntity.ok(new OrdemServicoResponseDTO(atualizado));
     }
 
     @DeleteMapping("/{id}")
-    public void deletar(@PathVariable Long id) {
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
         service.deletar(id);
+        return ResponseEntity.noContent().build();
     }
+
     @Autowired
     private AbastecimentoRepository abastecimentoRepository;
 
@@ -84,9 +99,16 @@ public class OrdemServicoController {
     }
 
     @GetMapping("/por-mes")
-    public ResponseEntity<List<OrdemServico>> buscarPorMes(
+    public ResponseEntity<List<OrdemServicoResponseDTO>> buscarPorMes(
             @RequestParam int mes,
             @RequestParam int ano) {
-        return ResponseEntity.ok(service.buscarPorMesEAno(mes, ano));
+            
+        List<OrdemServico> lista = service.buscarPorMesEAno(mes, ano);
+        
+        List<OrdemServicoResponseDTO> dtoLista = lista.stream()
+                .map(OrdemServicoResponseDTO::new)
+                .toList();
+                
+        return ResponseEntity.ok(dtoLista);
     }
 }

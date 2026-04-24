@@ -1,6 +1,8 @@
 package com.example.AtlazDB.controller;
 
 import com.example.AtlazDB.dto.ViaturaRequestDTO;
+import com.example.AtlazDB.dto.ViaturaResponseDTO;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -18,27 +20,39 @@ public class ViaturaController {
     }
 
     @GetMapping
-    public List<Viatura> listar() {
-        return service.listarTodos();
+    public ResponseEntity<List<ViaturaResponseDTO>> listar() {
+        List<Viatura> lista = service.listarTodos();
+        
+        List<ViaturaResponseDTO> dtoLista = lista.stream()
+                .map(ViaturaResponseDTO::new)
+                .toList();
+                
+        return ResponseEntity.ok(dtoLista);
     }
 
     @GetMapping("/{id}")
-    public Viatura buscarPorId(@PathVariable Long id) {
-        return service.buscarPorId(id).orElse(null);
+    public ResponseEntity<ViaturaResponseDTO> buscarPorId(@PathVariable Long id) {
+        return service.buscarPorId(id)
+                .map(ViaturaResponseDTO::new)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public Viatura criar(@RequestBody ViaturaRequestDTO dto) {
-        return service.salvar(dto);
+    public ResponseEntity<ViaturaResponseDTO> criar(@RequestBody ViaturaRequestDTO dto) {
+        Viatura salvo = service.salvar(dto);
+        return ResponseEntity.ok(new ViaturaResponseDTO(salvo));
     }
 
     @PutMapping("/{id}")
-    public Viatura atualizar(@PathVariable Long id, @RequestBody ViaturaRequestDTO dto) {
-        return service.atualizar(id, dto);
+    public ResponseEntity<ViaturaResponseDTO> atualizar(@PathVariable Long id, @RequestBody ViaturaRequestDTO dto) {
+        Viatura atualizado = service.atualizar(id, dto);
+        return ResponseEntity.ok(new ViaturaResponseDTO(atualizado));
     }
 
     @DeleteMapping("/{id}")
-    public void deletar(@PathVariable Long id) {
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
         service.deletar(id);
+        return ResponseEntity.noContent().build();
     }
 }
