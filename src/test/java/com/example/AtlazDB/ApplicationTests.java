@@ -13,7 +13,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -22,150 +21,150 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class AbastecimentoControllerTest {
+class RefuelingControllerTest {
 
     @Autowired private MockMvc mockMvc;
-    @Autowired private UsuarioRepository usuarioRepository;
-    @Autowired private ModeloRepository modeloRepository;
-    @Autowired private ViaturaRepository viaturaRepository;
-    @Autowired private CidadeRepository cidadeRepository;
-    @Autowired private OrdemServicoRepository ordemServicoRepository;
-    @Autowired private AbastecimentoRepository abastecimentoRepository;
+    @Autowired private UserRepository userRepository;
+    @Autowired private ModelRepository modelRepository;
+    @Autowired private VehicleRepository vehicleRepository;
+    @Autowired private CityRepository cityRepository;
+    @Autowired private ServiceOrderRepository serviceOrderRepository;
+    @Autowired private RefuelingRepository refuelingRepository;
 
-    private Long idUsuario;
-    private Long idViatura;
-    private Long idCidade;
-    private Long idOs;
+    private Long userId;
+    private Long vehicleId;
+    private Long cityId;
+    private Long serviceOrderId;
 
     @BeforeEach
     void setup() {
-        // limpa na ordem certa por causa das FK
-        abastecimentoRepository.deleteAll();
-        ordemServicoRepository.deleteAll();
-        cidadeRepository.deleteAll();
-        viaturaRepository.deleteAll();
-        usuarioRepository.deleteAll();
-        modeloRepository.deleteAll();
+        refuelingRepository.deleteAll();
+        serviceOrderRepository.deleteAll();
+        cityRepository.deleteAll();
+        vehicleRepository.deleteAll();
+        userRepository.deleteAll();
+        modelRepository.deleteAll();
 
-        Usuario usuario = new Usuario();
-        usuario.setNome("Teste");
-        usuario.setMatricula("000001");
-        usuario.setEmail("teste@email.com");
-        usuario.setSenhaHash("senha");
-        usuario.setPerfil(Perfil.ADMIN);
-        usuario.setUsuarioStatus(UsuarioStatus.ATIVO);
-        idUsuario = usuarioRepository.save(usuario).getId();
+        User user = new User();
+        user.setName("Test");
+        user.setRegistration("000001");
+        user.setEmail("test@email.com");
+        user.setPasswordHash("password");
+        user.setProfile(Profile.ADMIN);
+        user.setUserStatus(UserStatus.ATIVO);
+        userId = userRepository.save(user).getId();
 
-        Modelo modelo = new Modelo();
-        modelo.setNomeModelo("Prisma");
-        modelo.setNomeMarca("Chevrolet");
-        Modelo modeloSalvo = modeloRepository.save(modelo);
+        Model model = new Model();
+        model.setModelName("Prisma");
+        model.setBrandName("Chevrolet");
+        Model savedModel = modelRepository.save(model);
 
-        Viatura viatura = new Viatura();
-        viatura.setPrefixo("US01");
-        viatura.setTipo(TipoViatura.UTILITARIO);
-        viatura.setViaturaStatus(ViaturaStatus.ATIVO);
-        viatura.setModelo(modeloSalvo);
-        idViatura = viaturaRepository.save(viatura).getId();
+        Vehicle vehicle = new Vehicle();
+        vehicle.setPrefix("US01");
+        vehicle.setType(VehicleType.UTILITARIO);
+        vehicle.setVehicleStatus(VehicleStatus.ATIVO);
+        vehicle.setModel(savedModel);
+        vehicleId = vehicleRepository.save(vehicle).getId();
 
-        Cidade cidade = new Cidade();
-        cidade.setNome("São José dos Campos");
-        cidade.setUf("SP");
-        idCidade = cidadeRepository.save(cidade).getId();
+        City city = new City();
+        city.setName("São José dos Campos");
+        city.setState("SP");
+        cityId = cityRepository.save(city).getId();
 
-        OrdemServico os = new OrdemServico();
-        os.setTipoServico(TipoOcorrencia.ADMINISTRATIVO);
-        os.setLocalDestino("Taubaté");
-        os.setRequisitante("Teste");
-        os.setKmSaida(new BigDecimal("100"));
-        os.setDataSaida(LocalDateTime.now());
-        os.setUsuario(usuarioRepository.findById(idUsuario).get());
-        os.setViatura(viaturaRepository.findById(idViatura).get());
-        idOs = ordemServicoRepository.save(os).getId();
+        ServiceOrder so = new ServiceOrder();
+        so.setServiceType(OccurrenceType.ADMINISTRATIVO);
+        so.setDestinationLocation("Taubaté");
+        so.setRequester("Test");
+        so.setDepartureKm(new BigDecimal("100"));
+        so.setDepartureDate(LocalDateTime.now());
+        so.setUser(userRepository.findById(userId).get());
+        so.setVehicle(vehicleRepository.findById(vehicleId).get());
+        serviceOrderId = serviceOrderRepository.save(so).getId();
     }
 
     @Test
-    void deveCriarAbastecimento() throws Exception {
-        mockMvc.perform(post("/abastecimentos")
+    void shouldCreateRefueling() throws Exception {
+        mockMvc.perform(post("/refuelings")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                         {
-                            "dataHora": "2026-04-02T17:36:17",
-                            "litros": 1,
-                            "valorTotal": 1,
-                            "numeroNotaFiscal": "teste",
-                            "idUsuario": %d,
-                            "idViatura": %d,
-                            "idCidade": %d,
-                            "idOs": %d
+                            "dateTime": "2026-04-02T17:36:17",
+                            "liters": 1,
+                            "totalValue": 1,
+                            "receiptNumber": "test",
+                            "userId": %d,
+                            "vehicleId": %d,
+                            "cityId": %d,
+                            "serviceOrderId": %d
                         }
-                        """.formatted(idUsuario, idViatura, idCidade, idOs)))
+                        """.formatted(userId, vehicleId, cityId, serviceOrderId)))
                 .andExpect(status().isOk());
     }
+
     @Test
-    void deveBuscarAbastecimentosPorMes() throws Exception {
-        mockMvc.perform(post("/abastecimentos")
+    void shouldFindRefuelingsByMonth() throws Exception {
+        mockMvc.perform(post("/refuelings")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
             {
-                "dataHora": "2026-04-02T17:36:17",
-                "litros": 1,
-                "valorTotal": 1,
-                "numeroNotaFiscal": "teste",
-                "idUsuario": %d,
-                "idViatura": %d,
-                "idCidade": %d,
-                "idOs": %d
+                "dateTime": "2026-04-02T17:36:17",
+                "liters": 1,
+                "totalValue": 1,
+                "receiptNumber": "test",
+                "userId": %d,
+                "vehicleId": %d,
+                "cityId": %d,
+                "serviceOrderId": %d
             }
-            """.formatted(idUsuario, idViatura, idCidade, idOs)));
+            """.formatted(userId, vehicleId, cityId, serviceOrderId)));
 
-        mockMvc.perform(get("/abastecimentos/por-mes")
-                        .param("mes", "4")
-                        .param("ano", "2026"))
+        mockMvc.perform(get("/refuelings/by-month")
+                        .param("month", "4")
+                        .param("year", "2026"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$.length()").value(1));
     }
 
     @Test
-    void deveRetornarListaVaziaParaMesSemAbastecimento() throws Exception {
-        mockMvc.perform(get("/abastecimentos/por-mes")
-                        .param("mes", "1")
-                        .param("ano", "2000"))
+    void shouldReturnEmptyListForMonthWithoutRefueling() throws Exception {
+        mockMvc.perform(get("/refuelings/by-month")
+                        .param("month", "1")
+                        .param("year", "2000"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$.length()").value(0));
     }
 
     @Test
-    void deveListarTiposOcorrencia() throws Exception {
-        mockMvc.perform(get("/ordens-servico/tipos-ocorrencia"))
+    void shouldListOccurrenceTypes() throws Exception {
+        mockMvc.perform(get("/service-orders/occurrence-types"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$[0]").value("ADMINISTRATIVO"));
+                .andExpect(jsonPath("$[0]").value("ADMINISTRATIVE"));
     }
 
     @Test
-    void deveListarViaturas() throws Exception {
-        mockMvc.perform(get("/viaturas"))
+    void shouldListVehicles() throws Exception {
+        mockMvc.perform(get("/vehicles"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$[0].prefixo").value("US01"));
+                .andExpect(jsonPath("$[0].prefix").value("US01"));
     }
 
     @Test
-    void deveGerarCsvCompleto() throws Exception {
-        mockMvc.perform(get("/ordens-servico/csv"))
+    void shouldGenerateCompleteCsv() throws Exception {
+        mockMvc.perform(get("/service-orders/csv"))
                 .andExpect(status().isOk())
                 .andExpect(header().string("Content-Type", "text/csv; charset=UTF-8"))
                 .andExpect(header().exists("Content-Disposition"));
     }
 
     @Test
-    void deveGerarCsvFiltradoPorMes() throws Exception {
-        mockMvc.perform(get("/ordens-servico/csv")
-                        .param("mes", "4")
-                        .param("ano", "2026"))
+    void shouldGenerateFilteredCsvByMonth() throws Exception {
+        mockMvc.perform(get("/service-orders/csv")
+                        .param("month", "4")
+                        .param("year", "2026"))
                 .andExpect(status().isOk())
                 .andExpect(header().string("Content-Type", "text/csv; charset=UTF-8"));
     }
