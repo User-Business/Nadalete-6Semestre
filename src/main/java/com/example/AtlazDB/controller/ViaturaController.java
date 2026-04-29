@@ -21,21 +21,13 @@ public class ViaturaController {
 
     @GetMapping
     public ResponseEntity<List<ViaturaResponseDTO>> listar() {
-        List<Viatura> lista = service.listarTodos();
-        
-        List<ViaturaResponseDTO> dtoLista = lista.stream()
-                .map(ViaturaResponseDTO::new)
-                .toList();
-                
-        return ResponseEntity.ok(dtoLista);
+      
+        return ResponseEntity.ok(service.listarTodos());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ViaturaResponseDTO> buscarPorId(@PathVariable Long id) {
-        return service.buscarPorId(id)
-                .map(ViaturaResponseDTO::new)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(service.buscarPorId(id));
     }
 
     @PostMapping

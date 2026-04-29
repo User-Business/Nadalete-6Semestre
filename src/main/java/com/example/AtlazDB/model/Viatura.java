@@ -14,9 +14,11 @@ public class Viatura {
     @Column(name = "id_viatura")
     private Long id;
 
+    @Column(nullable = false, unique = true)
     private String prefixo;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private TipoViatura tipo;
 
     @Column(name = "viatura_status")
@@ -24,6 +26,10 @@ public class Viatura {
     private ViaturaStatus viaturaStatus;
 
     @ManyToOne
-    @JoinColumn(name = "id_modelo")
+    @JoinColumn(name = "id_modelo", nullable = false)
     private Modelo modelo;
+
+    @Column(name = "tipo_abastecimento", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private TipoCombustivelViatura tipoCombustivel;
 }

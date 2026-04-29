@@ -1,6 +1,7 @@
 package com.example.AtlazDB.service;
 
 import com.example.AtlazDB.dto.ViaturaRequestDTO;
+import com.example.AtlazDB.dto.ViaturaResponseDTO;
 import com.example.AtlazDB.enums.ViaturaStatus;
 import com.example.AtlazDB.model.Modelo;
 import com.example.AtlazDB.repository.ModeloRepository;
@@ -22,21 +23,31 @@ public class ViaturaService {
         this.modeloRepository = modeloRepository;
     }
 
-    public List<Viatura> listarTodos() {
-        return repository.findAll();
+    public List<ViaturaResponseDTO> listarTodos() {
+        return repository.findAll()
+                .stream()
+                .map(ViaturaResponseDTO::new)
+                .toList();
     }
 
-    public Optional<Viatura> buscarPorId(Long id) {
-        return repository.findById(id);
+    public ViaturaResponseDTO buscarPorId(Long id) {
+        return repository.findById(id)
+                .map(ViaturaResponseDTO::new)
+                .orElseThrow(() -> new RuntimeException("Viatura não encontrada"));
     }
 
     public Viatura salvar(ViaturaRequestDTO dto) {
-        Modelo modelo = modeloRepository.findById(dto.getIdModelo()).orElseThrow(()->new RuntimeException("Modelo não encontrado!"));
+        Modelo modelo = modeloRepository.findById(dto.getIdModelo())
+                .orElseThrow(() -> new RuntimeException("Modelo não encontrado!"));
+
         Viatura viatura = new Viatura();
         viatura.setTipo(dto.getTipo());
         viatura.setPrefixo(dto.getPrefixo());
         viatura.setViaturaStatus(ViaturaStatus.ATIVO);
         viatura.setModelo(modelo);
+
+        viatura.setTipoCombustivel(dto.getTipoCombustivel());
+
         return repository.save(viatura);
     }
 
@@ -45,10 +56,17 @@ public class ViaturaService {
     }
 
     public Viatura atualizar(Long id, ViaturaRequestDTO dto) {
-        Viatura viatura = repository.findById(id).orElseThrow(()-> new RuntimeException("Viatura não encontrada."));
+        Viatura viatura = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Viatura não encontrada."));
+
         viatura.setTipo(dto.getTipo());
         viatura.setPrefixo(dto.getPrefixo());
         viatura.setViaturaStatus(ViaturaStatus.ATIVO);
+
+        viatura.setTipoCombustivel(dto.getTipoCombustivel());
+
         return repository.save(viatura);
     }
+
+
 }
