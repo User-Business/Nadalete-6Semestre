@@ -68,7 +68,7 @@ class RefuelingControllerTest {
 
         City city = new City();
         city.setName("São José dos Campos");
-        city.setState("SP");
+        city.setUf("SP");
         cityId = cityRepository.save(city).getId();
 
         ServiceOrder so = new ServiceOrder();

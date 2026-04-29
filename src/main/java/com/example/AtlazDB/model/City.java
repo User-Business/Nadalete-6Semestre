@@ -1,6 +1,11 @@
 package com.example.AtlazDB.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Data;
 
 @Entity
@@ -17,5 +22,5 @@ public class City {
     private String name;
 
     @Column(name = "uf")
-    private String state;
+    private String uf;
 }

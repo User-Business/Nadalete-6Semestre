@@ -2,9 +2,6 @@ package com.example.AtlazDB.dto;
 
 import com.example.AtlazDB.enums.VehicleType;
 
-import lombok.Getter;
-import lombok.Setter;
-
 
 public class VehicleRequestDTO {
 
