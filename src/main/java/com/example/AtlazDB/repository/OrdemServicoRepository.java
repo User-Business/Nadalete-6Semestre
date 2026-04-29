@@ -15,4 +15,6 @@ public interface OrdemServicoRepository extends JpaRepository<OrdemServico, Long
     List<OrdemServico> buscarPorPeriodo(
             @Param("inicio") LocalDateTime inicio,
             @Param("fim") LocalDateTime fim);
+
+    OrdemServico findTopByViatura_IdAndDataRetornoIsNotNullOrderByDataRetornoDesc(Long viaturaId);
 }

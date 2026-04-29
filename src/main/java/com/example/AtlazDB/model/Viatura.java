@@ -26,4 +26,7 @@ public class Viatura {
     @ManyToOne
     @JoinColumn(name = "id_modelo")
     private Modelo modelo;
+
+    @Column(name = "km_atual")
+    private Double kmAtual;
 }
