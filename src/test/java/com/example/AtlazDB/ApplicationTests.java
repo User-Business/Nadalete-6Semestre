@@ -62,7 +62,7 @@ class RefuelingControllerTest {
         Vehicle vehicle = new Vehicle();
         vehicle.setPrefix("US01");
         vehicle.setType(VehicleType.UTILITARIO);
-        vehicle.setVehicleStatus(VehicleStatus.ACTIVE);
+        vehicle.setVehicleStatus(VehicleStatus.EM_USO);
         vehicle.setModel(savedModel);
         vehicle.setFuelType(FuelType.GASOLINA); 
         vehicleId = vehicleRepository.save(vehicle).getId();

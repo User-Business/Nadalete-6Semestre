@@ -59,4 +59,96 @@ public class Refueling {
     @JoinColumn(name = "id_os")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private ServiceOrder serviceOrder;
+
+    public Long getId() {
+        return id;
+    }
+
+    public LocalDateTime getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
+    }
+
+    public BigDecimal getCurrentKm() {
+        return currentKm;
+    }
+
+    public void setCurrentKm(BigDecimal currentKm) {
+        this.currentKm = currentKm;
+    }
+
+    public BigDecimal getLiters() {
+        return liters;
+    }
+
+    public void setLiters(BigDecimal liters) {
+        this.liters = liters;
+    }
+
+    public BigDecimal getTotalValue() {
+        return totalValue;
+    }
+
+    public void setTotalValue(BigDecimal totalValue) {
+        this.totalValue = totalValue;
+    }
+
+    public FuelType getFuelType() {
+        return fuelType;
+    }
+
+    public void setFuelType(FuelType fuelType) {
+        this.fuelType = fuelType;
+    }
+
+    public String getReceiptNumber() {
+        return receiptNumber;
+    }
+
+    public void setReceiptNumber(String receiptNumber) {
+        this.receiptNumber = receiptNumber;
+    }
+
+    public String getStateObservation() {
+        return stateObservation;
+    }
+
+    public void setStateObservation(String stateObservation) {
+        this.stateObservation = stateObservation;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Vehicle getVehicle() {
+        return vehicle;
+    }
+
+    public void setVehicle(Vehicle vehicle) {
+        this.vehicle = vehicle;
+    }
+
+    public City getCity() {
+        return city;
+    }
+
+    public void setCity(City city) {
+        this.city = city;
+    }
+
+    public ServiceOrder getServiceOrder() {
+        return serviceOrder;
+    }
+
+    public void setServiceOrder(ServiceOrder serviceOrder) {
+        this.serviceOrder = serviceOrder;
+    }
 }

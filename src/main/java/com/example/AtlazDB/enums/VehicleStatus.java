@@ -1,7 +1,8 @@
 package com.example.AtlazDB.enums;
 
 public enum VehicleStatus {
-    ACTIVE,
-    INACTIVE,
-    MAINTENANCE
+    DISPONIVEL,
+    MANUTENCAO,
+    EM_USO,
+    DESATIVADA
 }

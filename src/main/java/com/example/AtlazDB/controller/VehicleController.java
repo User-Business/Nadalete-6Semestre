@@ -2,12 +2,11 @@ package com.example.AtlazDB.controller;
 
 import com.example.AtlazDB.dto.VehicleRequestDTO;
 import com.example.AtlazDB.dto.VehicleResponseDTO;
+import com.example.AtlazDB.service.VehicleService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
 
-import com.example.AtlazDB.model.Vehicle;
-import com.example.AtlazDB.service.VehicleService;
+import java.util.List;
 
 @RestController
 @RequestMapping("/vehicles")
@@ -31,14 +30,12 @@ public class VehicleController {
 
     @PostMapping
     public ResponseEntity<VehicleResponseDTO> create(@RequestBody VehicleRequestDTO dto) {
-        Vehicle saved = service.save(dto);
-        return ResponseEntity.ok(new VehicleResponseDTO(saved));
+        return ResponseEntity.ok(service.save(dto));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<VehicleResponseDTO> update(@PathVariable Long id, @RequestBody VehicleRequestDTO dto) {
-        Vehicle updated = service.update(id, dto);
-        return ResponseEntity.ok(new VehicleResponseDTO(updated));
+        return ResponseEntity.ok(service.update(id, dto));
     }
 
     @DeleteMapping("/{id}")
