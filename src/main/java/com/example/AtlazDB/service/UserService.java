@@ -34,7 +34,7 @@ public class UserService {
         user.setPasswordHash(dto.getPasswordHash());
         user.setEmail(dto.getEmail());
         user.setProfile(dto.getProfile());
-        user.setUserStatus(UserStatus.ATIVO);
+        user.setUserStatus(UserStatus.DISPONIVEL);
 
         return repository.save(user);
     }
@@ -52,7 +52,7 @@ public class UserService {
         user.setPasswordHash(dto.getPasswordHash());
         user.setEmail(dto.getEmail());
         user.setProfile(dto.getProfile());
-        user.setUserStatus(UserStatus.ATIVO);
+        user.setUserStatus(UserStatus.DISPONIVEL);
 
         return repository.save(user);
     }

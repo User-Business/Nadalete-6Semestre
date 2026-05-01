@@ -51,7 +51,7 @@ class RefuelingControllerTest {
         user.setEmail("test@email.com");
         user.setPasswordHash("password");
         user.setProfile(Profile.ADMIN);
-        user.setUserStatus(UserStatus.ATIVO);
+        user.setUserStatus(UserStatus.DISPONIVEL);
         userId = userRepository.save(user).getId();
 
         Model model = new Model();
@@ -62,7 +62,7 @@ class RefuelingControllerTest {
         Vehicle vehicle = new Vehicle();
         vehicle.setPrefix("US01");
         vehicle.setType(VehicleType.UTILITARIO);
-        vehicle.setVehicleStatus(VehicleStatus.EM_USO);
+        vehicle.setVehicleStatus(VehicleStatus.DISPONIVEL);
         vehicle.setModel(savedModel);
         vehicle.setFuelType(FuelType.GASOLINA); 
         vehicleId = vehicleRepository.save(vehicle).getId();
