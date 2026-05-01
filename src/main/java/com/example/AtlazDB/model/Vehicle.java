@@ -3,7 +3,6 @@ package com.example.AtlazDB.model;
 import jakarta.persistence.*;
 import com.example.AtlazDB.enums.*;
 import lombok.Data;
-
 @Entity
 @Table(name = "viatura")
 @Data

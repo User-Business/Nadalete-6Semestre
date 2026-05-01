@@ -42,7 +42,7 @@ public class VehicleService {
         Vehicle vehicle = new Vehicle();
         vehicle.setType(dto.getType());
         vehicle.setPrefix(dto.getPrefix());
-        vehicle.setVehicleStatus(VehicleStatus.ACTIVE);
+        vehicle.setVehicleStatus(VehicleStatus.DISPONIVEL);
         vehicle.setModel(model);
         vehicle.setFuelType(dto.getFuelType());
 
@@ -59,7 +59,7 @@ public class VehicleService {
 
         vehicle.setType(dto.getType());
         vehicle.setPrefix(dto.getPrefix());
-        vehicle.setVehicleStatus(VehicleStatus.ACTIVE);
+        vehicle.setVehicleStatus(VehicleStatus.DISPONIVEL);
         vehicle.setFuelType(dto.getFuelType());
 
         return repository.save(vehicle);

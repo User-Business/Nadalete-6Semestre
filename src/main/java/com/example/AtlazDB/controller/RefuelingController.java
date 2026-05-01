@@ -14,11 +14,9 @@ import com.example.AtlazDB.service.RefuelingService;
 public class RefuelingController {
 
     private final RefuelingService service;
-//    private final GenerateCsv generateCsv;
 
     public RefuelingController(RefuelingService service, GenerateCsv generateCsv) {
         this.service = service;
-//        this.generateCsv = generateCsv;
     }
 
     @GetMapping
@@ -29,18 +27,6 @@ public class RefuelingController {
     ) {
         return service.searchWithFilters(fuelType, totalValue, currentKm);
     }
-
-
-//    @GetMapping("/csv")
-//    public ResponseEntity<byte[]> downloadCSV() {
-//
-//        byte[] csvBytes = generateCsv.generateCSV();
-//
-//        return ResponseEntity.ok()
-//                .header("Content-Disposition", "attachment; filename=refueling.csv")
-//                .header("Content-Type", "text/csv")
-//                .body(csvBytes);
-//    }
 
     @GetMapping("/{id}")
     public Refueling findById(@PathVariable Long id) {
