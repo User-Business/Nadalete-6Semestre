@@ -13,7 +13,8 @@ public record VehicleResponseDTO(
         VehicleStatus status,
         FuelType fuelType,
         VehicleType type,
-        Double km
+        Double km,
+        Long modelId
 ) {
     public VehicleResponseDTO(Vehicle vehicle) {
         this(
@@ -24,7 +25,8 @@ public record VehicleResponseDTO(
                 vehicle.getVehicleStatus(),
                 vehicle.getFuelType(),
                 vehicle.getType(),
-                vehicle.getKm()
+                vehicle.getKm(),
+                vehicle.getModel().getId()
         );
     }
 }

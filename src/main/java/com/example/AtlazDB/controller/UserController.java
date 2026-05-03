@@ -1,6 +1,8 @@
 package com.example.AtlazDB.controller;
 
 import com.example.AtlazDB.dto.UserRequestDTO;
+import com.example.AtlazDB.dto.UserResponseDTO;
+
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -18,15 +20,19 @@ public class UserController {
     }
 
     @GetMapping
-    public List<User> list() {
-        return service.listAll();
+    public List<UserResponseDTO> list() {
+        return service.listAll().stream()
+            .map(UserResponseDTO::new)
+            .toList();
     }
 
     @GetMapping("/{id}")
-    public User findById(@PathVariable Long id) {
-        return service.findById(id).orElse(null);
+    public UserResponseDTO findById(@PathVariable Long id) {
+        return service.findById(id)
+            .map(UserResponseDTO::new)
+            .orElse(null);
     }
-
+    
     @PostMapping
     public User create(@RequestBody UserRequestDTO dto) {
         return service.save(dto);

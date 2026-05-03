@@ -65,21 +65,29 @@ public class VehicleService {
 
     public VehicleResponseDTO update(Long id, VehicleRequestDTO dto) {
 
-        Vehicle vehicle = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Vehicle not found."));
+    Vehicle vehicle = repository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Vehicle not found."));
 
-        Model model = modelRepository.findById(dto.getModelId())
-                .orElseThrow(() -> new RuntimeException("Model not found!"));
+    Model model = modelRepository.findById(dto.getModelId())
+            .orElseThrow(() -> new RuntimeException("Model not found!"));
 
-        vehicle.setPrefix(dto.getPrefix());
-        vehicle.setType(dto.getType());
-        vehicle.setFuelType(dto.getFuelType());
-        vehicle.setModel(model);
+    vehicle.setPrefix(dto.getPrefix());
+    vehicle.setType(dto.getType());
+    vehicle.setFuelType(dto.getFuelType());
+    vehicle.setModel(model);
 
-        Vehicle updated = repository.save(vehicle);
-
-        return new VehicleResponseDTO(updated);
+    if (dto.getStatus() != null) {
+        vehicle.setVehicleStatus(dto.getStatus());
     }
+    if (dto.getKm() != null) {
+        vehicle.setKm(dto.getKm());
+    }
+
+    Vehicle updated = repository.save(vehicle);
+
+    return new VehicleResponseDTO(updated);
+}
+    
     public void updateCurrentKm(Long vehicleId) {
     ServiceOrder last = serviceOrderRepository
             .findTopByVehicle_IdAndReturnDateIsNotNullOrderByReturnDateDesc(vehicleId);

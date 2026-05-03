@@ -30,7 +30,7 @@ public class UserService {
         User user = new User();
 
         user.setName(dto.getName());
-        user.setRegistration(dto.getRegistration());
+        user.setRegistration(dto.getRegistrationNumber());
         user.setPasswordHash(dto.getPasswordHash());
         user.setEmail(dto.getEmail());
         user.setProfile(dto.getProfile());
@@ -48,7 +48,7 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         user.setName(dto.getName());
-        user.setRegistration(dto.getRegistration());
+        user.setRegistration(dto.getRegistrationNumber());
         user.setPasswordHash(dto.getPasswordHash());
         user.setEmail(dto.getEmail());
         user.setProfile(dto.getProfile());

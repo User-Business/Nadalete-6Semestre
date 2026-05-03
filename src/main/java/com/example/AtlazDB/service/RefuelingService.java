@@ -39,30 +39,38 @@ public class RefuelingService {
         return repository.findById(id);
     }
 
-    public Refueling save(RefuelingRequestDTO dto) {
-        User user = userRepository.findById(dto.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found."));
-        Vehicle vehicle = vehicleRepository.findById(dto.getVehicleId())
-                .orElseThrow(() -> new RuntimeException("Vehicle not found."));
-        City city = cityRepository.findById(dto.getCityId())
-                .orElseThrow(() -> new RuntimeException("City not found."));
-        ServiceOrder serviceOrder = serviceOrderRepository.findById(dto.getServiceOrderId())
+   public Refueling save(RefuelingRequestDTO dto) {
+    User user = userRepository.findById(dto.getUserId())
+            .orElseThrow(() -> new RuntimeException("User not found."));
+    Vehicle vehicle = vehicleRepository.findById(dto.getVehicleId())
+            .orElseThrow(() -> new RuntimeException("Vehicle not found."));
+    City city = cityRepository.findById(dto.getCityId())
+            .orElseThrow(() -> new RuntimeException("City not found."));
+
+    // serviceOrder é opcional
+    ServiceOrder serviceOrder = null;
+    if (dto.getServiceOrderId() != null) {
+        serviceOrder = serviceOrderRepository.findById(dto.getServiceOrderId())
                 .orElseThrow(() -> new RuntimeException("Service order not found."));
-
-        Refueling refueling = new Refueling();
-        refueling.setTotalValue(dto.getTotalValue());
-        refueling.setCurrentKm(serviceOrder.getArrivalKm());
-        refueling.setLiters(dto.getLiters());
-        refueling.setDateTime(dto.getDateTime());
-        refueling.setReceiptNumber(dto.getReceiptNumber());
-        refueling.setUser(user);
-        refueling.setVehicle(vehicle);
-        refueling.setCity(city);
-        refueling.setServiceOrder(serviceOrder);
-
-        return repository.save(refueling);
     }
 
+    Refueling refueling = new Refueling();
+    refueling.setTotalValue(dto.getTotalValue());
+    refueling.setLiters(dto.getLiters());
+    refueling.setDateTime(dto.getDateTime());
+    refueling.setReceiptNumber(dto.getReceiptNumber());
+    refueling.setUser(user);
+    refueling.setVehicle(vehicle);
+    refueling.setCity(city);
+    refueling.setServiceOrder(serviceOrder);
+
+    // currentKm só se tiver OS com chegada registrada
+    if (serviceOrder != null && serviceOrder.getArrivalKm() != null) {
+        refueling.setCurrentKm(serviceOrder.getArrivalKm());
+    }
+
+    return repository.save(refueling);
+}
     public void delete(Long id) {
         repository.deleteById(id);
     }
@@ -97,8 +105,11 @@ public class RefuelingService {
                 .orElseThrow(() -> new RuntimeException("City not found."));
         Refueling refueling = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Refueling not found."));
-        ServiceOrder serviceOrder = serviceOrderRepository.findById(dto.getServiceOrderId())
-                .orElseThrow(() -> new RuntimeException("Service order not found."));
+        ServiceOrder serviceOrder = null;
+        if (dto.getServiceOrderId() != null) {
+            serviceOrder = serviceOrderRepository.findById(dto.getServiceOrderId())
+                    .orElseThrow(() -> new RuntimeException("Service order not found."));
+        }
 
         refueling.setTotalValue(dto.getTotalValue());
         refueling.setCurrentKm(serviceOrder.getArrivalKm());
@@ -109,6 +120,10 @@ public class RefuelingService {
         refueling.setVehicle(vehicle);
         refueling.setCity(city);
         refueling.setServiceOrder(serviceOrder);
+
+        if (serviceOrder != null && serviceOrder.getArrivalKm() != null) {
+            refueling.setCurrentKm(serviceOrder.getArrivalKm());
+        }
 
         return repository.save(refueling);
     }

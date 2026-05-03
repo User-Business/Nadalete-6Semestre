@@ -1,6 +1,8 @@
 package com.example.AtlazDB.service;
 
 import com.example.AtlazDB.dto.ServiceOrderRequestDTO;
+import com.example.AtlazDB.enums.UserStatus;
+import com.example.AtlazDB.enums.VehicleStatus;
 import com.example.AtlazDB.model.User;
 import com.example.AtlazDB.model.Vehicle;
 import com.example.AtlazDB.repository.UserRepository;
@@ -83,6 +85,12 @@ public class ServiceOrderService {
 
         ServiceOrder saved = repository.save(so);
 
+        vehicle.setVehicleStatus(VehicleStatus.EM_USO);
+        vehicleRepository.save(vehicle);
+
+        user.setUserStatus(UserStatus.EM_CAMPO);
+        userRepository.save(user);
+
         // atualiza km da viatura
         if (saved.getArrivalKm() != null) {
             vehicleService.updateCurrentKm(saved.getVehicle().getId());
@@ -98,22 +106,11 @@ public class ServiceOrderService {
     public ServiceOrder update(Long id, ServiceOrderRequestDTO dto) {
         ServiceOrder serviceOrder = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Service order not found!"));
-        User user = userRepository.findById(dto.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found!"));
-        Vehicle vehicle = vehicleRepository.findById(dto.getVehicleId())
-                .orElseThrow(() -> new RuntimeException("Vehicle not found!"));
-
-        // só permite alterar a última OS
-        ServiceOrder last = repository
-                .findTopByVehicle_IdAndReturnDateIsNotNullOrderByReturnDateDesc(dto.getVehicleId());
-
-        if (last == null || !serviceOrder.getId().equals(last.getId())) {
-            throw new RuntimeException("Only the last service order can be updated");
-        }
 
         // garante que km não diminui
         if (dto.getArrivalKm() != null) {
-            double currentKm = vehicle.getKm() != null ? vehicle.getKm() : 0.0;
+            double currentKm = serviceOrder.getVehicle().getKm() != null 
+                ? serviceOrder.getVehicle().getKm() : 0.0;
             if (dto.getArrivalKm().doubleValue() < currentKm) {
                 throw new RuntimeException(
                     "Cannot reduce vehicle km. Current value: " + currentKm
@@ -121,20 +118,27 @@ public class ServiceOrderService {
             }
         }
 
-        serviceOrder.setServiceType(dto.getServiceType());
-        serviceOrder.setDestinationLocation(dto.getDestinationLocation());
-        serviceOrder.setJustification(dto.getJustification());
-        serviceOrder.setRequester(dto.getRequester());
-        serviceOrder.setDepartureKm(dto.getDepartureKm());
-        serviceOrder.setDepartureDate(dto.getDepartureDate());
-        serviceOrder.setReturnDate(dto.getReturnDate());
-        serviceOrder.setUser(user);
-        serviceOrder.setVehicle(vehicle);
-
+        // atualiza só os campos de chegada
         if (dto.getArrivalKm() != null && dto.getReturnDate() != null) {
             serviceOrder.setArrivalKm(dto.getArrivalKm());
+            serviceOrder.setReturnDate(dto.getReturnDate());
         }
 
-        return repository.save(serviceOrder);
+        ServiceOrder updated = repository.save(serviceOrder);
+
+        Vehicle vehicle = serviceOrder.getVehicle();
+        vehicle.setVehicleStatus(VehicleStatus.DISPONIVEL);
+        vehicleRepository.save(vehicle);
+
+        User user = serviceOrder.getUser();
+        user.setUserStatus(UserStatus.DISPONIVEL);
+        userRepository.save(user);
+
+        vehicleService.updateCurrentKm(vehicle.getId());
+
+        // atualiza km da viatura
+        vehicleService.updateCurrentKm(updated.getVehicle().getId());
+
+        return updated;
     }
 }

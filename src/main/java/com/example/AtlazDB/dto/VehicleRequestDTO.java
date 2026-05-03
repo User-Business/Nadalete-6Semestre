@@ -1,6 +1,7 @@
 package com.example.AtlazDB.dto;
 
 import com.example.AtlazDB.enums.FuelType;
+import com.example.AtlazDB.enums.VehicleStatus;
 import com.example.AtlazDB.enums.VehicleType;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,4 +15,7 @@ public class VehicleRequestDTO {
     private Long modelId;
     private FuelType fuelType;
     private Double km;
+    private VehicleStatus status;
+    
+
 }
