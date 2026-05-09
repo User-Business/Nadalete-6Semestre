@@ -1,9 +1,12 @@
 package com.example.AtlazDB.model;
 
+import com.example.AtlazDB.enums.CnhType;
 import com.example.AtlazDB.enums.Profile;
 import com.example.AtlazDB.enums.UserStatus;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.Set;
 
 @Entity
 @Table(name = "usuario")
@@ -34,6 +37,15 @@ public class User {
     @Column(name = "usuario_status")
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus;
+
+    @ElementCollection(targetClass = CnhType.class)
+    @Enumerated(EnumType.STRING)
+    @CollectionTable(
+            name = "usuario_cnh",
+            joinColumns = @JoinColumn(name = "id_usuario")
+    )
+    @Column(name = "tipo_cnh")
+    private Set<CnhType> tiposCnh;
 
     public Long getId() {
         return id;

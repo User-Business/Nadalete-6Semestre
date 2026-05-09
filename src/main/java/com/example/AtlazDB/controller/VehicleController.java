@@ -28,6 +28,13 @@ public class VehicleController {
         return ResponseEntity.ok(service.findById(id));
     }
 
+    @GetMapping("/available/{userId}")
+    public List<VehicleResponseDTO> listAvailableVehicles(
+            @PathVariable Long userId
+    ) {
+        return service.findAvailableVehiclesByUser(userId);
+    }
+
     @PostMapping
     public ResponseEntity<VehicleResponseDTO> create(@RequestBody VehicleRequestDTO dto) {
         return ResponseEntity.ok(service.save(dto));
