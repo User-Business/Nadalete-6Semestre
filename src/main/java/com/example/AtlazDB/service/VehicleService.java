@@ -99,4 +99,21 @@ public class VehicleService {
         repository.save(vehicle);
     }
 }
+
+public Double calculateAverageConsumption(Long id) {
+        // 1. Busque a viatura ou os abastecimentos atrelados a esse ID
+        // Exemplo fictício:
+        // List<Abastecimento> abastecimentos = abastecimentoRepository.findByViaturaId(id);
+        
+        // 2. Some a quilometragem total e os litros totais dos registros
+        // double totalKm = ...
+        // double totalLiters = ...
+        
+        // 3. Faça o cálculo (Evitando divisão por zero)
+        // if (totalLiters == 0) return 0.0;
+        // return totalKm / totalLiters;
+        
+        // Retorno temporário para não dar erro de compilação até você aplicar sua lógica:
+        return 0.0;
+    }
 }
