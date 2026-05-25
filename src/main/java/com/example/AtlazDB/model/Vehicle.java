@@ -40,6 +40,8 @@ public class Vehicle {
     @Column(name = "km_atual")
     private Double km;
 
-
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tipo_cnh_necessaria")
+    private CnhType tipoCnhNecessaria;
 
 }

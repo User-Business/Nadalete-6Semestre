@@ -4,6 +4,7 @@ import com.example.AtlazDB.enums.FuelType;
 import com.example.AtlazDB.enums.VehicleStatus;
 import com.example.AtlazDB.enums.VehicleType;
 import com.example.AtlazDB.model.Vehicle;
+import com.example.AtlazDB.enums.CnhType;
 
 public record VehicleResponseDTO(
         Long id,
@@ -14,7 +15,8 @@ public record VehicleResponseDTO(
         FuelType fuelType,
         VehicleType type,
         Double km,
-        Long modelId
+        Long modelId,
+        CnhType tipoCnhNecessaria
 ) {
     public VehicleResponseDTO(Vehicle vehicle) {
         this(
@@ -26,7 +28,8 @@ public record VehicleResponseDTO(
                 vehicle.getFuelType(),
                 vehicle.getType(),
                 vehicle.getKm(),
-                vehicle.getModel().getId()
+                vehicle.getModel().getId(),
+                vehicle.getTipoCnhNecessaria()
         );
     }
 }

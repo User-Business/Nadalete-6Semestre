@@ -54,6 +54,12 @@ public class ServiceOrderService {
         Vehicle vehicle = vehicleRepository.findById(dto.getVehicleId())
                 .orElseThrow(() -> new RuntimeException("Vehicle not found!"));
 
+        if (!user.getTiposCnh().contains(vehicle.getTipoCnhNecessaria())) {
+            throw new RuntimeException(
+                    "User does not have the required CNH for this vehicle."
+            );
+        }
+
         ServiceOrder so = new ServiceOrder();
         so.setServiceType(dto.getServiceType());
         so.setDestinationLocation(dto.getDestinationLocation());
@@ -65,7 +71,6 @@ public class ServiceOrderService {
         so.setUser(user);
         so.setVehicle(vehicle);
 
-        // validação contra a última OS
         ServiceOrder last = repository
                 .findTopByVehicle_IdAndReturnDateIsNotNullOrderByReturnDateDesc(dto.getVehicleId());
 
@@ -78,7 +83,6 @@ public class ServiceOrderService {
             }
         }
 
-        // só define arrivalKm se a OS for finalizada
         if (dto.getArrivalKm() != null && dto.getReturnDate() != null) {
             so.setArrivalKm(dto.getArrivalKm());
         }
@@ -91,7 +95,6 @@ public class ServiceOrderService {
         user.setUserStatus(UserStatus.EM_CAMPO);
         userRepository.save(user);
 
-        // atualiza km da viatura
         if (saved.getArrivalKm() != null) {
             vehicleService.updateCurrentKm(saved.getVehicle().getId());
         }

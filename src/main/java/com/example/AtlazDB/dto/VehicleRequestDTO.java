@@ -1,5 +1,6 @@
 package com.example.AtlazDB.dto;
 
+import com.example.AtlazDB.enums.CnhType;
 import com.example.AtlazDB.enums.FuelType;
 import com.example.AtlazDB.enums.VehicleStatus;
 import com.example.AtlazDB.enums.VehicleType;
@@ -16,6 +17,7 @@ public class VehicleRequestDTO {
     private FuelType fuelType;
     private Double km;
     private VehicleStatus status;
+    private CnhType tipoCnhNecessaria;
     
 
 }

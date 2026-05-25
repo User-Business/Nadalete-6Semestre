@@ -27,6 +27,7 @@ public class UserService {
     }
 
     public User save(UserRequestDTO dto) {
+
         User user = new User();
 
         user.setName(dto.getName());
@@ -35,6 +36,7 @@ public class UserService {
         user.setEmail(dto.getEmail());
         user.setProfile(dto.getProfile());
         user.setUserStatus(UserStatus.DISPONIVEL);
+        user.setTiposCnh(dto.getTiposCnh());
 
         return repository.save(user);
     }
@@ -53,6 +55,7 @@ public class UserService {
         user.setEmail(dto.getEmail());
         user.setProfile(dto.getProfile());
         user.setUserStatus(UserStatus.DISPONIVEL);
+        user.setTiposCnh(dto.getTiposCnh());
 
         return repository.save(user);
     }

@@ -66,8 +66,9 @@ public class DashboardService {
                     && a.getLiters().doubleValue() > 0)
             .map(a -> {
                 double km = a.getServiceOrder().getArrivalKm().doubleValue()
-                        - a.getServiceOrder().getDepartureKm().doubleValue();
-                return km / a.getLiters().doubleValue();
+                - a.getServiceOrder().getDepartureKm().doubleValue();
+                double liters = a.getLiters().doubleValue();
+                return km / liters;
             })
             .filter(c -> c > 0)
             .toList();
