@@ -1,14 +1,14 @@
 package com.example.AtlazDB.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import com.example.AtlazDB.model.ServiceOrder;
-import com.example.AtlazDB.repository.projection.AtividadeProjection;
+import java.time.LocalDateTime;
+import java.util.List;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import com.example.AtlazDB.model.ServiceOrder;
+import com.example.AtlazDB.repository.projection.AtividadeProjection;
 
 public interface ServiceOrderRepository extends JpaRepository<ServiceOrder, Long> {
 
@@ -40,4 +40,9 @@ public interface ServiceOrderRepository extends JpaRepository<ServiceOrder, Long
         """, nativeQuery = true)
     List<AtividadeProjection> findOrdensDeHoje();
     ServiceOrder findTopByVehicle_IdAndReturnDateIsNotNullOrderByReturnDateDesc(Long viaturaId);
+
+    boolean existsByUserIdAndReturnDateIsNull(Long userId);
+
+    boolean existsByVehicleIdAndReturnDateIsNull(Long vehicleId);    
+
 }

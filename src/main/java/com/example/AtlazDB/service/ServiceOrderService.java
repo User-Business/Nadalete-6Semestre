@@ -1,20 +1,20 @@
 package com.example.AtlazDB.service;
 
-import com.example.AtlazDB.dto.ServiceOrderRequestDTO;
-import com.example.AtlazDB.enums.UserStatus;
-import com.example.AtlazDB.enums.VehicleStatus;
-import com.example.AtlazDB.model.User;
-import com.example.AtlazDB.model.Vehicle;
-import com.example.AtlazDB.repository.UserRepository;
-import com.example.AtlazDB.repository.VehicleRepository;
-import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.stereotype.Service;
+
+import com.example.AtlazDB.dto.ServiceOrderRequestDTO;
+import com.example.AtlazDB.enums.UserStatus;
+import com.example.AtlazDB.enums.VehicleStatus;
 import com.example.AtlazDB.model.ServiceOrder;
+import com.example.AtlazDB.model.User;
+import com.example.AtlazDB.model.Vehicle;
 import com.example.AtlazDB.repository.ServiceOrderRepository;
+import com.example.AtlazDB.repository.UserRepository;
+import com.example.AtlazDB.repository.VehicleRepository;
 
 @Service
 public class ServiceOrderService {

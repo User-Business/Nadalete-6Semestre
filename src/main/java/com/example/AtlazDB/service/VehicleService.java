@@ -1,5 +1,9 @@
 package com.example.AtlazDB.service;
 
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 import com.example.AtlazDB.dto.VehicleRequestDTO;
 import com.example.AtlazDB.dto.VehicleResponseDTO;
 import com.example.AtlazDB.enums.CnhType;
@@ -7,14 +11,11 @@ import com.example.AtlazDB.enums.VehicleStatus;
 import com.example.AtlazDB.model.Model;
 import com.example.AtlazDB.model.ServiceOrder;
 import com.example.AtlazDB.model.User;
-import com.example.AtlazDB.repository.UserRepository;
 import com.example.AtlazDB.model.Vehicle;
 import com.example.AtlazDB.repository.ModelRepository;
 import com.example.AtlazDB.repository.ServiceOrderRepository;
+import com.example.AtlazDB.repository.UserRepository;
 import com.example.AtlazDB.repository.VehicleRepository;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class VehicleService {
@@ -82,8 +83,11 @@ public class VehicleService {
                 ? dto.getTipoCnhNecessaria()
                 : CnhType.B);
         vehicle.setModel(model);
-
-        vehicle.setVehicleStatus(VehicleStatus.DISPONIVEL);
+        if (dto.getStatus() != null) {
+        vehicle.setVehicleStatus(dto.getStatus());
+        } else {
+            vehicle.setVehicleStatus(VehicleStatus.DISPONIVEL);
+        }
         vehicle.setKm(dto.getKm() != null ? dto.getKm() : 0.0);
 
         Vehicle saved = repository.save(vehicle);
@@ -102,6 +106,13 @@ public class VehicleService {
 
         Model model = modelRepository.findById(dto.getModelId())
                 .orElseThrow(() -> new RuntimeException("Model not found!"));
+
+        if (dto.getStatus() == VehicleStatus.DESATIVADA) {
+            boolean hasActiveOrder = serviceOrderRepository.existsByVehicleIdAndReturnDateIsNull(id);
+            if (hasActiveOrder) {
+                throw new BusinessRuleException("Não é possível inativar a viatura porque ela está vinculada a uma Ordem de Serviço em andamento.");
+            }
+        }
 
         vehicle.setPrefix(dto.getPrefix());
         vehicle.setType(dto.getType());
@@ -125,14 +136,14 @@ public class VehicleService {
     }
     
     public void updateCurrentKm(Long vehicleId) {
-    ServiceOrder last = serviceOrderRepository
-            .findTopByVehicle_IdAndReturnDateIsNotNullOrderByReturnDateDesc(vehicleId);
+        ServiceOrder last = serviceOrderRepository
+                .findTopByVehicle_IdAndReturnDateIsNotNullOrderByReturnDateDesc(vehicleId);
 
-    if (last != null && last.getArrivalKm() != null) {
-        Vehicle vehicle = repository.findById(vehicleId)
-                .orElseThrow(() -> new RuntimeException("Vehicle not found"));
-        vehicle.setKm(last.getArrivalKm().doubleValue());
-        repository.save(vehicle);
+        if (last != null && last.getArrivalKm() != null) {
+            Vehicle vehicle = repository.findById(vehicleId)
+                    .orElseThrow(() -> new RuntimeException("Vehicle not found"));
+            vehicle.setKm(last.getArrivalKm().doubleValue());
+            repository.save(vehicle);
+        }
     }
-}
 }
