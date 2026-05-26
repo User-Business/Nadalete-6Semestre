@@ -43,6 +43,11 @@ public class ServiceOrderController {
         return service.findById(id).orElse(null);
     }
 
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<ServiceOrder>> findByUserId(@PathVariable Long userId) {
+        return ResponseEntity.ok(service.findByUserId(userId));
+    }
+
     @PostMapping
     public ServiceOrder create(@RequestBody ServiceOrderRequestDTO dto) {
         return service.save(dto);
