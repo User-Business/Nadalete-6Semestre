@@ -42,6 +42,10 @@ public class ServiceOrderService {
         return repository.findById(id);
     }
 
+    public List<ServiceOrder> findByUserId(Long userId) {
+        return repository.findByUser_IdOrderByDepartureDateDesc(userId);
+    }
+
     public List<ServiceOrder> findByMonthAndYear(int month, int year) {
         LocalDateTime start = LocalDateTime.of(year, month, 1, 0, 0);
         LocalDateTime end = start.plusMonths(1);

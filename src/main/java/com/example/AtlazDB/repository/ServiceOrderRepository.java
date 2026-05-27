@@ -16,6 +16,8 @@ public interface ServiceOrderRepository extends JpaRepository<ServiceOrder, Long
     List<ServiceOrder> findByPeriod(
             @Param("start") LocalDateTime start,
             @Param("end") LocalDateTime end);
+
+    List<ServiceOrder> findByUser_IdOrderByDepartureDateDesc(Long userId);
     
     
     @Query(value = """
