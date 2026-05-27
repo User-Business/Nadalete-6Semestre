@@ -36,7 +36,7 @@ public class UserService {
         user.setEmail(dto.getEmail());
         user.setProfile(dto.getProfile());
         user.setUserStatus(UserStatus.DISPONIVEL);
-        user.setTiposCnh(dto.getTiposCnh());
+        user.setCnhTypes(dto.getCnhTypes());
 
         return repository.save(user);
     }
@@ -55,7 +55,7 @@ public class UserService {
         user.setEmail(dto.getEmail());
         user.setProfile(dto.getProfile());
         user.setUserStatus(UserStatus.DISPONIVEL);
-        user.setTiposCnh(dto.getTiposCnh());
+        user.setCnhTypes(dto.getCnhTypes());
 
         return repository.save(user);
     }

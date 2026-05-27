@@ -46,7 +46,7 @@ public class VehicleService {
 
                 // somente viaturas compativeis com a CNH
                 .filter(vehicle ->
-                        user.getTiposCnh()
+                        user.getCnhTypes()
                                 .contains(vehicle.getTipoCnhNecessaria())
                 )
 

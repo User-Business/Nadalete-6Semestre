@@ -45,7 +45,7 @@ public class User {
             joinColumns = @JoinColumn(name = "id_usuario")
     )
     @Column(name = "tipo_cnh")
-    private Set<CnhType> tiposCnh;
+    private Set<CnhType> cnhTypes;
 
     public Long getId() {
         return id;

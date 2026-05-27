@@ -16,6 +16,7 @@ public class RefuelingResponseDTO {
 
     private Long id;
     private LocalDateTime date;
+    private BigDecimal liters;
     private BigDecimal value;
     private String receiptNumber;
 
@@ -23,6 +24,7 @@ public class RefuelingResponseDTO {
         return new RefuelingResponseDTO(
             refueling.getId(),
             refueling.getDateTime(),
+            refueling.getLiters(),
             refueling.getTotalValue(),
             refueling.getReceiptNumber()
         );
