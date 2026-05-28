@@ -26,10 +26,10 @@ public class DashboardService {
     private final RefuelingRepository refuelingRepository;
 
     public DashboardService(
-        VehicleRepository vehicleRepository,
-        UserRepository userRepository,
-        ServiceOrderRepository serviceOrderRepository,
-        RefuelingRepository refuelingRepository
+            VehicleRepository vehicleRepository,
+            UserRepository userRepository,
+            ServiceOrderRepository serviceOrderRepository,
+            RefuelingRepository refuelingRepository
     ) {
         this.vehicleRepository = vehicleRepository;
         this.userRepository = userRepository;
@@ -39,72 +39,81 @@ public class DashboardService {
 
     public DashboardResponseDTO getDashboard() {
         return new DashboardResponseDTO(
-            new DashboardResponseDTO.DataContainer(
-                buildMetricas(),
-                buildAtividadesHoje()
-            )
+                new DashboardResponseDTO.DataContainer(
+                        buildMetrics(),
+                        buildVehicleKm(),
+                        buildTodayActivities()
+                )
         );
     }
 
-    private DashboardResponseDTO.Metricas buildMetricas() {
-        return new DashboardResponseDTO.Metricas(
-            (int) vehicleRepository.countByVehicleStatus(VehicleStatus.DISPONIVEL),
-            (int) vehicleRepository.count(),
-            (int) userRepository.countByProfileAndUserStatus(Profile.TECNICO, UserStatus.EM_CAMPO),
-            calcularConsumoMedio()
+    private DashboardResponseDTO.Metrics buildMetrics() {
+        return new DashboardResponseDTO.Metrics(
+                (int) vehicleRepository.countByVehicleStatus(VehicleStatus.EM_USO),
+                (int) vehicleRepository.countByVehicleStatus(VehicleStatus.DISPONIVEL),
+                (int) userRepository.countByProfileAndUserStatus(Profile.TECNICO, UserStatus.EM_CAMPO),
+                calcularConsumoMedio(),
+                calcularGastoHoje()
         );
     }
 
     private BigDecimal calcularConsumoMedio() {
-    List<Refueling> abastecimentos = refuelingRepository.findAll();
+        List<Refueling> abastecimentos = refuelingRepository.findAll();
 
-    List<Double> consumos = abastecimentos.stream()
-            .filter(a -> a.getServiceOrder() != null
-                    && a.getServiceOrder().getArrivalKm() != null
-                    && a.getServiceOrder().getDepartureKm() != null
-                    && a.getLiters() != null
-                    && a.getLiters().doubleValue() > 0)
-            .map(a -> {
-                double km = a.getServiceOrder().getArrivalKm().doubleValue()
-                - a.getServiceOrder().getDepartureKm().doubleValue();
-                double liters = a.getLiters().doubleValue();
-                return km / liters;
-            })
-            .filter(c -> c > 0)
-            .toList();
+        List<Double> consumos = abastecimentos.stream()
+                .filter(a -> a.getServiceOrder() != null
+                        && a.getServiceOrder().getArrivalKm() != null
+                        && a.getServiceOrder().getDepartureKm() != null
+                        && a.getLiters() != null
+                        && a.getLiters().doubleValue() > 0)
+                .map(a -> {
+                    double km = a.getServiceOrder().getArrivalKm().doubleValue()
+                            - a.getServiceOrder().getDepartureKm().doubleValue();
+                    double liters = a.getLiters().doubleValue();
+                    return km / liters;
+                })
+                .filter(c -> c > 0)
+                .toList();
 
         if (consumos.isEmpty()) return BigDecimal.ZERO;
 
         double media = consumos.stream().mapToDouble(Double::doubleValue).average().orElse(0);
         return BigDecimal.valueOf(media).setScale(1, RoundingMode.HALF_UP);
     }
-    private List<DashboardResponseDTO.Atividade> buildAtividadesHoje() {
-        List<DashboardResponseDTO.Atividade> atividades = new ArrayList<>();
 
-        // adiciona ordens de serviço de hoje
+    private BigDecimal calcularGastoHoje() {
+        return BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP);
+    }
+
+    private List<DashboardResponseDTO.VehicleKm> buildVehicleKm() {
+        return new ArrayList<>(); // Lista reativa vazia aguardando queries futuras
+    }
+
+    private List<DashboardResponseDTO.TodayActivity> buildTodayActivities() {
+        List<DashboardResponseDTO.TodayActivity> atividades = new ArrayList<>();
+
         serviceOrderRepository.findOrdensDeHoje()
-            .stream()
-            .map(this::toAtividade)
-            .forEach(atividades::add);
+                .stream()
+                .map(this::toTodayActivity)
+                .forEach(atividades::add);
 
-        // adiciona abastecimentos de hoje
         refuelingRepository.findAbastecimentosDeHoje()
-            .stream()
-            .map(this::toAtividade)
-            .forEach(atividades::add);
+                .stream()
+                .map(this::toTodayActivity)
+                .forEach(atividades::add);
 
         return atividades;
     }
 
-    private DashboardResponseDTO.Atividade toAtividade(AtividadeProjection p) {
-        return new DashboardResponseDTO.Atividade(
-            p.getId(),
-            p.getTipo(),
-            p.getPrefixoViatura(),
-            p.getNomeTecnico(),
-            p.getDescricao(),
-            p.getStatus(),
-            p.getCorStatus()
+    private DashboardResponseDTO.TodayActivity toTodayActivity(AtividadeProjection p) {
+        return new DashboardResponseDTO.TodayActivity(
+                p.getId(),
+                p.getTipo(),
+                p.getPrefixoViatura(),
+                p.getNomeTecnico(),
+                p.getDescricao(),
+                p.getStatus(),
+                p.getCorStatus()
         );
     }
 }
