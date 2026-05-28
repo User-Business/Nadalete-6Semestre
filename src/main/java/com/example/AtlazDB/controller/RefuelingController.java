@@ -2,8 +2,12 @@ package com.example.AtlazDB.controller;
 
 import com.example.AtlazDB.dto.RefuelingRequestDTO;
 import com.example.AtlazDB.enums.FuelType;
+
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 import java.util.List;
 import com.example.AtlazDB.service.GenerateCsv;
 import com.example.AtlazDB.model.Refueling;
@@ -55,6 +59,15 @@ public class RefuelingController {
 
         List<Refueling> list = service.findByMonthAndYear(month, year);
         return ResponseEntity.ok(list);
+    }
+
+    @GetMapping("/count-by-date")
+    public ResponseEntity<Long> countRefuelingsByDate(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+        
+        Long count = service.countRefuelingsByDateInterval(startDate, endDate);
+        return ResponseEntity.ok(count);
     }
 
 }
