@@ -39,4 +39,6 @@ public interface RefuelingRepository extends JpaRepository<Refueling, Long> {
         WHERE DATE(a.data_hora) = CURRENT_DATE
         """, nativeQuery = true)
     List<AtividadeProjection> findAbastecimentosDeHoje();
+
+    Long countByDateTimeBetween(LocalDateTime start, LocalDateTime end);
 }

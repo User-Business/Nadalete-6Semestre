@@ -6,6 +6,7 @@ import com.example.AtlazDB.model.*;
 import com.example.AtlazDB.repository.*;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -134,5 +135,13 @@ public class RefuelingService {
         LocalDateTime end = start.plusMonths(1);
 
         return repository.findByPeriod(start, end);
+    }
+
+    public Long countRefuelingsByDateInterval(LocalDate startDate, LocalDate endDate) {
+        LocalDateTime startOfDay = startDate.atStartOfDay();
+        
+        LocalDateTime endOfDay = endDate.atTime(java.time.LocalTime.MAX);
+        
+        return repository.countByDateTimeBetween(startOfDay, endOfDay);
     }
 }
