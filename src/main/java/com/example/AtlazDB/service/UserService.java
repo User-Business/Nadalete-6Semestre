@@ -1,11 +1,12 @@
 package com.example.AtlazDB.service;
 
-import com.example.AtlazDB.dto.UserRequestDTO;
-import com.example.AtlazDB.enums.UserStatus;
-import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.stereotype.Service;
+
+import com.example.AtlazDB.dto.UserRequestDTO;
+import com.example.AtlazDB.enums.UserStatus;
 import com.example.AtlazDB.model.User;
 import com.example.AtlazDB.repository.ServiceOrderRepository;
 import com.example.AtlazDB.repository.UserRepository;
@@ -39,7 +40,7 @@ public class UserService {
         user.setPasswordHash(dto.getPasswordHash());
         user.setEmail(dto.getEmail());
         user.setProfile(dto.getProfile());
-         if (dto.getUserStatus() != null) {
+        if (dto.getUserStatus() != null) {
         user.setUserStatus(UserStatus.valueOf(dto.getUserStatus()));
         } else {
         user.setUserStatus(UserStatus.DISPONIVEL);
