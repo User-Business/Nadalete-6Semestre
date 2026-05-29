@@ -43,8 +43,7 @@ public class UserService {
         user.setUserStatus(UserStatus.valueOf(dto.getUserStatus()));
         } else {
         user.setUserStatus(UserStatus.DISPONIVEL);
-        }
-        user.setTiposCnh(dto.getTiposCnh());
+        user.setCnhTypes(dto.getCnhTypes());
 
         return repository.save(user);
     }
@@ -72,7 +71,7 @@ public class UserService {
         if (dto.getUserStatus() != null) {
         user.setUserStatus(UserStatus.valueOf(dto.getUserStatus()));
         }
-        user.setTiposCnh(dto.getTiposCnh());
+        user.setCnhTypes(dto.getCnhTypes());
 
         return repository.save(user);
     }

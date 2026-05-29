@@ -5,6 +5,7 @@ import com.example.AtlazDB.dto.VehicleResponseDTO;
 import com.example.AtlazDB.service.VehicleService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.example.AtlazDB.enums.VehicleStatus;
 
 import java.util.List;
 
@@ -49,5 +50,16 @@ public class VehicleController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/vehicle-status")
+    public ResponseEntity<VehicleStatus[]> getVehicleStatuses() {
+        return ResponseEntity.ok(VehicleStatus.values());
+    }
+
+    @GetMapping("/{id}/average-consumption")
+    public ResponseEntity<Double> getAverageConsumption(@PathVariable Long id) {
+        Double averageConsumption = service.calculateAverageConsumption(id);
+        return ResponseEntity.ok(averageConsumption);
     }
 }

@@ -17,6 +17,6 @@ public class UserRequestDTO {
     private Profile profile;
     private String userStatus;
 
-    private Set<CnhType> tiposCnh;
+    private Set<CnhType> cnhTypes;
 
 }

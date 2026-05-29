@@ -54,7 +54,7 @@ public class ServiceOrderService {
         Vehicle vehicle = vehicleRepository.findById(dto.getVehicleId())
                 .orElseThrow(() -> new RuntimeException("Vehicle not found!"));
 
-        if (!user.getTiposCnh().contains(vehicle.getTipoCnhNecessaria())) {
+        if (!user.getCnhTypes().contains(vehicle.getTipoCnhNecessaria())) {
             throw new RuntimeException(
                     "User does not have the required CNH for this vehicle."
             );

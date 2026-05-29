@@ -15,7 +15,7 @@ public record UserResponseDTO(
         String email,
         Profile profile,
         UserStatus userStatus,
-        Set<CnhType> tiposCnh
+        Set<CnhType> cnhType
 
 ) {
 
@@ -28,7 +28,7 @@ public record UserResponseDTO(
                 user.getEmail(),
                 user.getProfile(),
                 user.getUserStatus(),
-                user.getTiposCnh()
+                user.getCnhTypes()
         );
     }
 }
