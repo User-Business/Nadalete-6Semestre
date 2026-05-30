@@ -1,11 +1,11 @@
 package com.example.AtlazDB.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import com.example.AtlazDB.model.ServiceOrder;
-import com.example.AtlazDB.repository.projection.AtividadeProjection;
-
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
+import com.example.AtlazDB.model.ServiceOrder;
+import com.example.AtlazDB.repository.projection.AtividadeProjection;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,7 +16,6 @@ public interface ServiceOrderRepository extends JpaRepository<ServiceOrder, Long
     List<ServiceOrder> findByPeriod(
             @Param("start") LocalDateTime start,
             @Param("end") LocalDateTime end);
-    
     
     @Query(value = """
         SELECT 
@@ -39,5 +38,8 @@ public interface ServiceOrderRepository extends JpaRepository<ServiceOrder, Long
         WHERE DATE(os.data_saida) = CURRENT_DATE
         """, nativeQuery = true)
     List<AtividadeProjection> findOrdensDeHoje();
+
     ServiceOrder findTopByVehicle_IdAndReturnDateIsNotNullOrderByReturnDateDesc(Long viaturaId);
+
+    long countByDepartureDateBetween(LocalDateTime start, LocalDateTime end);
 }

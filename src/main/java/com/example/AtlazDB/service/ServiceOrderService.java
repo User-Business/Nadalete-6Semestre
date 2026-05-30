@@ -9,6 +9,7 @@ import com.example.AtlazDB.repository.UserRepository;
 import com.example.AtlazDB.repository.VehicleRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -143,5 +144,14 @@ public class ServiceOrderService {
         vehicleService.updateCurrentKm(updated.getVehicle().getId());
 
         return updated;
+    }
+    
+    public Long countServiceOrdersByDateInterval(LocalDate dataInicio, LocalDate dataFim) {
+        // Pega do primeiro segundo do dia de início até o último segundo do dia de fim
+        LocalDateTime startOfDay = dataInicio.atStartOfDay();
+        LocalDateTime endOfDay = dataFim.atTime(java.time.LocalTime.MAX);
+        
+        // Conta os registros na tabela ordem_servico
+        return repository.countByDepartureDateBetween(startOfDay, endOfDay);
     }
 }
