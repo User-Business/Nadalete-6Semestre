@@ -24,26 +24,45 @@ public class GenerateCsv {
         csv.append("vehicle,service_type,justification,requester,destination,departure_km,arrival_km,departure_date,return_date,liters,total_value,receipt\n");
 
         for (ServiceOrder so : orders) {
-            // Find refueling linked to the service order
-            Refueling refueling = refuelings.stream()
-                    .filter(r -> r.getServiceOrder() != null && r.getServiceOrder().getId().equals(so.getId()))
+            Refueling r = refuelings.stream()
+                    .filter(rf -> rf.getServiceOrder() != null && rf.getServiceOrder().getId().equals(so.getId()))
                     .findFirst()
                     .orElse(null);
 
-            csv.append(escape(so.getVehicle().getPrefix())).append(",");
-            csv.append(escape(so.getServiceType())).append(",");
-            csv.append(escape(so.getJustification())).append(",");
-            csv.append(escape(so.getRequester())).append(",");
-            csv.append(escape(so.getDestinationLocation())).append(",");
-            csv.append(escape(so.getDepartureKm())).append(",");
-            csv.append(escape(so.getArrivalKm())).append(",");
-            csv.append(escape(so.getDepartureDate())).append(",");
-            csv.append(escape(so.getReturnDate())).append(",");
-            csv.append(refueling != null ? escape(refueling.getLiters()) : "").append(",");
-            csv.append(refueling != null ? escape(refueling.getTotalValue()) : "").append(",");
-            csv.append(refueling != null ? escape(refueling.getReceiptNumber()) : "").append("\n");
+            appendRow(csv,
+                    so.getVehicle().getPrefix(),
+                    so.getServiceType(),
+                    so.getJustification(),
+                    so.getRequester(),
+                    so.getDestinationLocation(),
+                    so.getDepartureKm(),
+                    so.getArrivalKm(),
+                    so.getDepartureDate(),
+                    so.getReturnDate(),
+                    r != null ? r.getLiters() : null,
+                    r != null ? r.getTotalValue() : null,
+                    r != null ? r.getReceiptNumber() : null);
         }
 
+        refuelings.stream()
+                .filter(r -> r.getServiceOrder() == null)
+                .forEach(r -> appendRow(csv,
+                        r.getVehicle() != null ? r.getVehicle().getPrefix() : null,
+                        "ABASTECIMENTO",
+                        null, null, null, null, null,
+                        r.getDateTime(),
+                        null,
+                        r.getLiters(),
+                        r.getTotalValue(),
+                        r.getReceiptNumber()));
+
         return csv.toString().getBytes(StandardCharsets.UTF_8);
+    }
+
+    private void appendRow(StringBuilder csv, Object... fields) {
+        for (int i = 0; i < fields.length; i++) {
+            csv.append(escape(fields[i]));
+            csv.append(i < fields.length - 1 ? "," : "\n");
+        }
     }
 }

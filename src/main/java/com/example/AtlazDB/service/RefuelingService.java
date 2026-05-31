@@ -145,4 +145,11 @@ public class RefuelingService {
         
         return repository.countByDateTimeBetween(startOfDay, endOfDay);
     }
+
+    public List<Refueling> findByInterval(LocalDate dataInicio, LocalDate dataFim) {
+        LocalDateTime start = dataInicio.atStartOfDay();
+        LocalDateTime end = dataFim.atTime(23, 59, 59);
+        return repository.findByPeriod(start, end);
+    }
+
 }

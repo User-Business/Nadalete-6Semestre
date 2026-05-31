@@ -159,4 +159,10 @@ public class ServiceOrderService {
         // Conta os registros na tabela ordem_servico
         return repository.countByDepartureDateBetween(startOfDay, endOfDay);
     }
+
+    public List<ServiceOrder> findByInterval(LocalDate dataInicio, LocalDate dataFim) {
+        LocalDateTime start = dataInicio.atStartOfDay();
+        LocalDateTime end = dataFim.atTime(23, 59, 59);
+        return repository.findByPeriod(start, end);
+    }
 }
