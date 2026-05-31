@@ -4,6 +4,7 @@ import com.example.AtlazDB.enums.CnhType;
 import com.example.AtlazDB.enums.FuelType;
 import com.example.AtlazDB.enums.VehicleStatus;
 import com.example.AtlazDB.enums.VehicleType;
+
 import lombok.Getter;
 import lombok.Setter;
 
