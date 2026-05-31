@@ -15,15 +15,8 @@ import com.example.AtlazDB.model.Vehicle;
 import com.example.AtlazDB.repository.ServiceOrderRepository;
 import com.example.AtlazDB.repository.UserRepository;
 import com.example.AtlazDB.repository.VehicleRepository;
-import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-
-import com.example.AtlazDB.model.ServiceOrder;
-import com.example.AtlazDB.repository.ServiceOrderRepository;
 
 @Service
 public class ServiceOrderService {
