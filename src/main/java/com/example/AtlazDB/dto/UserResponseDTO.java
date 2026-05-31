@@ -15,7 +15,7 @@ public record UserResponseDTO(
         String email,
         Profile profile,
         UserStatus userStatus,
-        Set<CnhType> cnhType
+        Set<CnhType> cnhTypes
 
 ) {
 
