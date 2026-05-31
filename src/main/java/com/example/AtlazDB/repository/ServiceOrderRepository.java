@@ -18,20 +18,19 @@ public interface ServiceOrderRepository extends JpaRepository<ServiceOrder, Long
             @Param("end") LocalDateTime end);
 
     List<ServiceOrder> findByUser_IdOrderByDepartureDateDesc(Long userId);
-    
-    
+
     @Query(value = """
-        SELECT 
+        SELECT
             os.id_os            AS id,
             'DESLOCAMENTO'      AS tipo,
             v.prefixo           AS prefixoViatura,
             u.nome              AS nomeTecnico,
             os.local_destino    AS descricao,
-            CASE 
+            CASE\s
                 WHEN os.data_retorno IS NOT NULL THEN 'CONCLUÍDO'
                 ELSE 'EM ANDAMENTO'
             END                 AS status,
-            CASE 
+            CASE\s
                 WHEN os.data_retorno IS NOT NULL THEN 'EMERALD'
                 ELSE 'AMBER'
             END                 AS corStatus
@@ -39,12 +38,15 @@ public interface ServiceOrderRepository extends JpaRepository<ServiceOrder, Long
         JOIN viatura v  ON v.id_viatura = os.id_viatura
         JOIN usuario u  ON u.id_usuario = os.id_usuario
         WHERE DATE(os.data_saida) = CURRENT_DATE
-        """, nativeQuery = true)
+       """, nativeQuery = true)
     List<AtividadeProjection> findOrdensDeHoje();
+
     ServiceOrder findTopByVehicle_IdAndReturnDateIsNotNullOrderByReturnDateDesc(Long viaturaId);
+
+    long countByDepartureDateBetween(LocalDateTime start, LocalDateTime end);
 
     boolean existsByUserIdAndReturnDateIsNull(Long userId);
 
-    boolean existsByVehicleIdAndReturnDateIsNull(Long vehicleId);    
+    boolean existsByVehicleIdAndReturnDateIsNull(Long vehicleId);
 
 }

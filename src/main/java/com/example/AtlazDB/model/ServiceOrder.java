@@ -137,5 +137,5 @@ public class ServiceOrder {
     public void setVehicle(Vehicle vehicle) {
         this.vehicle = vehicle;
     }
-
+    
 }

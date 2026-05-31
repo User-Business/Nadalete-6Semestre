@@ -7,6 +7,8 @@ import com.example.AtlazDB.service.RefuelingService;
 import com.example.AtlazDB.service.GenerateCsv;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 import java.util.List;
 
 import com.example.AtlazDB.model.ServiceOrder;
@@ -90,5 +92,15 @@ public class ServiceOrderController {
             @RequestParam int month,
             @RequestParam int year) {
         return ResponseEntity.ok(service.findByMonthAndYear(month, year));
+    }
+
+    @GetMapping("/count-by-interval")
+    public ResponseEntity<Long> countByInterval(
+            @RequestParam LocalDate dataInicio,
+            @RequestParam LocalDate dataFim) {
+        
+        Long total = service.countServiceOrdersByDateInterval(dataInicio, dataFim);
+        
+        return ResponseEntity.ok(total);
     }
 }
