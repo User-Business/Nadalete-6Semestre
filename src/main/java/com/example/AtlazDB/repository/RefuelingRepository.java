@@ -19,6 +19,8 @@ public interface RefuelingRepository extends JpaRepository<Refueling, Long> {
 
     List<Refueling> findByCurrentKmGreaterThan(Double currentKm);
 
+    List<Refueling> findByVehicleId(Long vehicleId);
+
     @Query("SELECT r FROM Refueling r WHERE r.dateTime >= :start AND r.dateTime < :end")
     List<Refueling> findByPeriod(
             @Param("start") LocalDateTime start,

@@ -1,21 +1,18 @@
 package com.example.AtlazDB.service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Comparator;
 import java.util.List;
 
+import com.example.AtlazDB.model.*;
+import com.example.AtlazDB.repository.*;
 import org.springframework.stereotype.Service;
 
 import com.example.AtlazDB.dto.VehicleRequestDTO;
 import com.example.AtlazDB.dto.VehicleResponseDTO;
 import com.example.AtlazDB.enums.CnhType;
 import com.example.AtlazDB.enums.VehicleStatus;
-import com.example.AtlazDB.model.Model;
-import com.example.AtlazDB.model.ServiceOrder;
-import com.example.AtlazDB.model.User;
-import com.example.AtlazDB.model.Vehicle;
-import com.example.AtlazDB.repository.ModelRepository;
-import com.example.AtlazDB.repository.ServiceOrderRepository;
-import com.example.AtlazDB.repository.UserRepository;
-import com.example.AtlazDB.repository.VehicleRepository;
 
 @Service
 public class VehicleService {
@@ -24,12 +21,14 @@ public class VehicleService {
     private final ModelRepository modelRepository;
     private final ServiceOrderRepository serviceOrderRepository;
     private final UserRepository userRepository;
+    private final RefuelingRepository refuelingRepository;
 
-    public VehicleService(VehicleRepository repository, ModelRepository modelRepository, ServiceOrderRepository serviceOrderRepository, UserRepository userRepository) {
+    public VehicleService(VehicleRepository repository, ModelRepository modelRepository, ServiceOrderRepository serviceOrderRepository, UserRepository userRepository, RefuelingRepository refuelingRepository) {
         this.repository = repository;
         this.modelRepository = modelRepository;
         this.serviceOrderRepository = serviceOrderRepository;
         this.userRepository = userRepository;
+        this.refuelingRepository = refuelingRepository;
     }
 
     public List<VehicleResponseDTO> findAvailableVehiclesByUser(Long userId) {
@@ -80,15 +79,24 @@ public class VehicleService {
         vehicle.setFuelType(dto.getFuelType());
         vehicle.setTipoCnhNecessaria(
                 dto.getTipoCnhNecessaria() != null
-                ? dto.getTipoCnhNecessaria()
-                : CnhType.B);
+                        ? dto.getTipoCnhNecessaria()
+                        : CnhType.B);
         vehicle.setModel(model);
         if (dto.getStatus() != null) {
-        vehicle.setVehicleStatus(dto.getStatus());
+            vehicle.setVehicleStatus(dto.getStatus());
         } else {
             vehicle.setVehicleStatus(VehicleStatus.DISPONIVEL);
         }
-        vehicle.setKm(dto.getKm() != null ? dto.getKm() : 0.0);
+
+        double km = dto.getKm() != null ? dto.getKm() : 0.0;
+        vehicle.setKm(km);
+
+        // Se não foi informado, define o default como km atual + 10.000
+        vehicle.setKmTrocaOleo(
+                BigDecimal.valueOf(dto.getKmTrocaOleo() != null
+                        ? dto.getKmTrocaOleo()
+                        : km + 10000)
+        );
 
         Vehicle saved = repository.save(vehicle);
 
@@ -148,20 +156,34 @@ public class VehicleService {
     }
 
 
-public Double calculateAverageConsumption(Long id) {
-        // 1. Busque a viatura ou os abastecimentos atrelados a esse ID
-        // Exemplo fictício:
-        // List<Abastecimento> abastecimentos = abastecimentoRepository.findByViaturaId(id);
-        
-        // 2. Some a quilometragem total e os litros totais dos registros
-        // double totalKm = ...
-        // double totalLiters = ...
-        
-        // 3. Faça o cálculo (Evitando divisão por zero)
-        // if (totalLiters == 0) return 0.0;
-        // return totalKm / totalLiters;
-        
-        // Retorno temporário para não dar erro de compilação até você aplicar sua lógica:
-        return 0.0;
+    public Double calculateAverageConsumption(Long id) {
+        List<Refueling> abastecimentos = refuelingRepository.findByVehicleId(id);
+
+        List<Double> consumos = abastecimentos.stream()
+                .filter(a -> a.getServiceOrder() != null
+                        && a.getServiceOrder().getArrivalKm() != null
+                        && a.getServiceOrder().getDepartureKm() != null
+                        && a.getLiters() != null
+                        && a.getLiters().doubleValue() > 0)
+                .map(a -> {
+                    double km = a.getServiceOrder().getArrivalKm().doubleValue()
+                            - a.getServiceOrder().getDepartureKm().doubleValue();
+                    double liters = a.getLiters().doubleValue();
+                    return km / liters;
+                })
+                .filter(c -> c > 0)
+                .toList();
+
+        if (consumos.isEmpty()) return 0.0;
+
+        double media = consumos.stream().mapToDouble(Double::doubleValue).average().orElse(0);
+        return BigDecimal.valueOf(media).setScale(1, RoundingMode.HALF_UP).doubleValue();
+    }
+
+    public VehicleResponseDTO atualizarKmTrocaOleo(Long id, BigDecimal kmTrocaOleo) {
+        Vehicle v = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Vehicle not found"));
+        v.setKmTrocaOleo(kmTrocaOleo);
+        return new VehicleResponseDTO(repository.save(v));
     }
 }

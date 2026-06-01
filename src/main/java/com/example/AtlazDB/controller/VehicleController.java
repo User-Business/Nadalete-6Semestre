@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.AtlazDB.enums.VehicleStatus;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -61,5 +62,13 @@ public class VehicleController {
     public ResponseEntity<Double> getAverageConsumption(@PathVariable Long id) {
         Double averageConsumption = service.calculateAverageConsumption(id);
         return ResponseEntity.ok(averageConsumption);
+    }
+
+    // VehicleController.java
+    @PatchMapping("/{id}/km-troca-oleo")
+    public ResponseEntity<VehicleResponseDTO> atualizarKmTrocaOleo(
+            @PathVariable Long id,
+            @RequestBody BigDecimal kmTrocaOleo) {
+        return ResponseEntity.ok(service.atualizarKmTrocaOleo(id, kmTrocaOleo));
     }
 }

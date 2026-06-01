@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "viatura")
 @Data
@@ -43,5 +45,8 @@ public class Vehicle {
     @Enumerated(EnumType.STRING)
     @Column(name = "tipo_cnh_necessaria")
     private CnhType tipoCnhNecessaria;
+
+    @Column(name = "km_troca_oleo")
+    private BigDecimal kmTrocaOleo;
 
 }

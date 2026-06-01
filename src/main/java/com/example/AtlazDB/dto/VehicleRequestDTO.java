@@ -19,6 +19,7 @@ public class VehicleRequestDTO {
     private Double km;
     private VehicleStatus status;
     private CnhType tipoCnhNecessaria;
+    private Double kmTrocaOleo;
     
 
 }
