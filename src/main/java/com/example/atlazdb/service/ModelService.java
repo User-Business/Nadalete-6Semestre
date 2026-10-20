@@ -1,10 +1,11 @@
 package com.example.atlazdb.service;
 
-import com.example.atlazdb.dto.ModelRequestDTO;
-import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.Optional;
 
+import org.springframework.stereotype.Service;
+
+import com.example.atlazdb.dto.ModelRequestDTO;
+import com.example.atlazdb.exception.ResourceNotFoundException;
 import com.example.atlazdb.model.Model;
 import com.example.atlazdb.repository.ModelRepository;
 
@@ -21,26 +22,29 @@ public class ModelService {
         return repository.findAll();
     }
 
-    public Optional<Model> findById(Long id) {
-        return repository.findById(id);
+    public Model findById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Model not found"));
     }
 
     public Model save(ModelRequestDTO dto) {
         Model model = new Model();
-        model.setModelName(dto.getNameModel());
-        model.setBrandName(dto.getNameBrand());
+        apply(model, dto);
+        return repository.save(model);
+    }
+
+    public Model update(Long id, ModelRequestDTO dto) {
+        Model model = findById(id);
+        apply(model, dto);
         return repository.save(model);
     }
 
     public void delete(Long id) {
-        repository.deleteById(id);
+        repository.delete(findById(id));
     }
 
-    public Model update(Long id, ModelRequestDTO dto) {
-        Model model = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Model not found"));
+    private void apply(Model model, ModelRequestDTO dto) {
         model.setModelName(dto.getNameModel());
         model.setBrandName(dto.getNameBrand());
-        return repository.save(model);
     }
 }

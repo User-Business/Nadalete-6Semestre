@@ -14,14 +14,12 @@ public class DashboardController {
 
     private final DashboardService service;
 
-    public DashboardController(DashboardService service){
+    public DashboardController(DashboardService service) {
         this.service = service;
     }
 
     @GetMapping
     public ResponseEntity<DashboardResponseDTO> getDashboard() {
         return ResponseEntity.ok(service.getDashboard());
-    
     }
-    
 }

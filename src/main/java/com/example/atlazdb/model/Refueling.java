@@ -1,16 +1,28 @@
 package com.example.atlazdb.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.*;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import com.example.atlazdb.enums.*;
-import lombok.Data;
+
+import com.example.atlazdb.enums.FuelType;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "abastecimento")
-@Data
+@Getter
+@Setter
 public class Refueling {
 
     @Id
@@ -59,96 +71,4 @@ public class Refueling {
     @JoinColumn(name = "id_os")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private ServiceOrder serviceOrder;
-
-    public Long getId() {
-        return id;
-    }
-
-    public LocalDateTime getDateTime() {
-        return dateTime;
-    }
-
-    public void setDateTime(LocalDateTime dateTime) {
-        this.dateTime = dateTime;
-    }
-
-    public BigDecimal getCurrentKm() {
-        return currentKm;
-    }
-
-    public void setCurrentKm(BigDecimal currentKm) {
-        this.currentKm = currentKm;
-    }
-
-    public BigDecimal getLiters() {
-        return liters;
-    }
-
-    public void setLiters(BigDecimal liters) {
-        this.liters = liters;
-    }
-
-    public BigDecimal getTotalValue() {
-        return totalValue;
-    }
-
-    public void setTotalValue(BigDecimal totalValue) {
-        this.totalValue = totalValue;
-    }
-
-    public FuelType getFuelType() {
-        return fuelType;
-    }
-
-    public void setFuelType(FuelType fuelType) {
-        this.fuelType = fuelType;
-    }
-
-    public String getReceiptNumber() {
-        return receiptNumber;
-    }
-
-    public void setReceiptNumber(String receiptNumber) {
-        this.receiptNumber = receiptNumber;
-    }
-
-    public String getStateObservation() {
-        return stateObservation;
-    }
-
-    public void setStateObservation(String stateObservation) {
-        this.stateObservation = stateObservation;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Vehicle getVehicle() {
-        return vehicle;
-    }
-
-    public void setVehicle(Vehicle vehicle) {
-        this.vehicle = vehicle;
-    }
-
-    public City getCity() {
-        return city;
-    }
-
-    public void setCity(City city) {
-        this.city = city;
-    }
-
-    public ServiceOrder getServiceOrder() {
-        return serviceOrder;
-    }
-
-    public void setServiceOrder(ServiceOrder serviceOrder) {
-        this.serviceOrder = serviceOrder;
-    }
 }

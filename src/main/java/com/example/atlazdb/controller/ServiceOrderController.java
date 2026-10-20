@@ -1,23 +1,36 @@
 package com.example.atlazdb.controller;
 
+import java.time.LocalDate;
+import java.util.List;
+
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.example.atlazdb.dto.ServiceOrderRequestDTO;
 import com.example.atlazdb.enums.OccurrenceType;
 import com.example.atlazdb.model.Refueling;
-import com.example.atlazdb.service.RefuelingService;
-import com.example.atlazdb.service.GenerateCsv;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.example.atlazdb.model.ServiceOrder;
+import com.example.atlazdb.service.GenerateCsv;
+import com.example.atlazdb.service.RefuelingService;
 import com.example.atlazdb.service.ServiceOrderService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/service-orders")
 public class ServiceOrderController {
+
+    private static final String CATEGORY_REFUELING = "abastecimento";
+    private static final String CATEGORY_SERVICE_ORDER = "os";
 
     private final ServiceOrderService service;
     private final RefuelingService refuelingService;
@@ -43,7 +56,7 @@ public class ServiceOrderController {
 
     @GetMapping("/{id}")
     public ServiceOrder findById(@PathVariable Long id) {
-        return service.findById(id).orElse(null);
+        return service.findById(id);
     }
 
     @GetMapping("/user/{userId}")
@@ -52,13 +65,14 @@ public class ServiceOrderController {
     }
 
     @PostMapping
-    public ServiceOrder create(@RequestBody ServiceOrderRequestDTO dto) {
+    public ServiceOrder create(@Valid @RequestBody ServiceOrderRequestDTO dto) {
         return service.save(dto);
     }
 
+    // Only the arrival fields are used when finishing a trip, so the full payload is not required here
     @PutMapping("/{id}")
     public ServiceOrder update(@PathVariable Long id, @RequestBody ServiceOrderRequestDTO dto) {
-        return service.update(id,dto);
+        return service.update(id, dto);
     }
 
     @DeleteMapping("/{id}")
@@ -66,11 +80,10 @@ public class ServiceOrderController {
         service.delete(id);
     }
 
-
     @GetMapping("/csv")
     public ResponseEntity<byte[]> downloadCSV(
-            @RequestParam(required = false) LocalDate dataInicio,
-            @RequestParam(required = false) LocalDate dataFim,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataInicio,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataFim,
             @RequestParam(required = false) Integer month,
             @RequestParam(required = false) Integer year,
             @RequestParam(required = false) String categoria) {
@@ -89,30 +102,27 @@ public class ServiceOrderController {
             refuelings = refuelingService.listAll();
         }
 
-        if ("abastecimento".equals(categoria)) orders = new ArrayList<>();
-        if ("os".equals(categoria)) refuelings = new ArrayList<>();
-
-        byte[] csvBytes = generateCsv.generateCSV(orders, refuelings);
+        if (CATEGORY_REFUELING.equals(categoria)) {
+            orders = List.of();
+        } else if (CATEGORY_SERVICE_ORDER.equals(categoria)) {
+            refuelings = List.of();
+        }
 
         return ResponseEntity.ok()
                 .header("Content-Disposition", "attachment; filename=records.csv")
                 .header("Content-Type", "text/csv; charset=UTF-8")
-                .body(csvBytes);
+                .body(generateCsv.generateCSV(orders, refuelings));
     }
+
     @GetMapping("/by-month")
-    public ResponseEntity<List<ServiceOrder>> findByMonth(
-            @RequestParam int month,
-            @RequestParam int year) {
+    public ResponseEntity<List<ServiceOrder>> findByMonth(@RequestParam int month, @RequestParam int year) {
         return ResponseEntity.ok(service.findByMonthAndYear(month, year));
     }
 
     @GetMapping("/count-by-interval")
     public ResponseEntity<Long> countByInterval(
-            @RequestParam LocalDate dataInicio,
-            @RequestParam LocalDate dataFim) {
-        
-        Long total = service.countServiceOrdersByDateInterval(dataInicio, dataFim);
-        
-        return ResponseEntity.ok(total);
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataInicio,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataFim) {
+        return ResponseEntity.ok(service.countServiceOrdersByDateInterval(dataInicio, dataFim));
     }
 }

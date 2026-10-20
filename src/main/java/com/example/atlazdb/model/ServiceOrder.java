@@ -1,15 +1,27 @@
 package com.example.atlazdb.model;
 
-import com.example.atlazdb.enums.OccurrenceType;
-import jakarta.persistence.*;
-import lombok.Data;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import com.example.atlazdb.enums.OccurrenceType;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
+
 @Entity
 @Table(name = "ordem_servico")
-@Data
+@Getter
+@Setter
 public class ServiceOrder {
 
     @Id
@@ -17,12 +29,8 @@ public class ServiceOrder {
     @Column(name = "id_os")
     private Long id;
 
-//    @Column(name = "service_order_number")
-//    private String serviceOrderNumber;
-
     @Column(name = "tipo_servico")
     @Enumerated(EnumType.STRING)
-
     private OccurrenceType serviceType;
 
     @Column(name = "local_destino")
@@ -53,89 +61,4 @@ public class ServiceOrder {
     @ManyToOne
     @JoinColumn(name = "id_viatura")
     private Vehicle vehicle;
-
-    public Long getId() {
-        return id;
-    }
-
-    public OccurrenceType getServiceType() {
-        return serviceType;
-    }
-
-    public void setServiceType(OccurrenceType serviceType) {
-        this.serviceType = serviceType;
-    }
-
-    public String getDestinationLocation() {
-        return destinationLocation;
-    }
-
-    public void setDestinationLocation(String destinationLocation) {
-        this.destinationLocation = destinationLocation;
-    }
-
-    public String getJustification() {
-        return justification;
-    }
-
-    public void setJustification(String justification) {
-        this.justification = justification;
-    }
-
-    public String getRequester() {
-        return requester;
-    }
-
-    public void setRequester(String requester) {
-        this.requester = requester;
-    }
-
-    public BigDecimal getDepartureKm() {
-        return departureKm;
-    }
-
-    public void setDepartureKm(BigDecimal departureKm) {
-        this.departureKm = departureKm;
-    }
-
-    public BigDecimal getArrivalKm() {
-        return arrivalKm;
-    }
-
-    public void setArrivalKm(BigDecimal arrivalKm) {
-        this.arrivalKm = arrivalKm;
-    }
-
-    public LocalDateTime getDepartureDate() {
-        return departureDate;
-    }
-
-    public void setDepartureDate(LocalDateTime departureDate) {
-        this.departureDate = departureDate;
-    }
-
-    public LocalDateTime getReturnDate() {
-        return returnDate;
-    }
-
-    public void setReturnDate(LocalDateTime returnDate) {
-        this.returnDate = returnDate;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Vehicle getVehicle() {
-        return vehicle;
-    }
-
-    public void setVehicle(Vehicle vehicle) {
-        this.vehicle = vehicle;
-    }
-    
 }

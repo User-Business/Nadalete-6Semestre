@@ -1,16 +1,30 @@
 package com.example.atlazdb.model;
 
+import java.util.Set;
+
 import com.example.atlazdb.enums.CnhType;
 import com.example.atlazdb.enums.Profile;
 import com.example.atlazdb.enums.UserStatus;
-import jakarta.persistence.*;
-import lombok.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import java.util.Set;
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "usuario")
-@Data
+@Getter
+@Setter
 public class User {
 
     @Id
@@ -27,6 +41,8 @@ public class User {
     @Column(name = "email")
     private String email;
 
+    // Never expose the password when the entity is serialized (e.g. nested in service orders)
+    @JsonIgnore
     @Column(name = "senha_hash")
     private String passwordHash;
 
@@ -46,57 +62,4 @@ public class User {
     )
     @Column(name = "tipo_cnh")
     private Set<CnhType> cnhTypes;
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getRegistration() {
-        return registration;
-    }
-
-    public void setRegistration(String registration) {
-        this.registration = registration;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPasswordHash() {
-        return passwordHash;
-    }
-
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
-    }
-
-    public Profile getProfile() {
-        return profile;
-    }
-
-    public void setProfile(Profile profile) {
-        this.profile = profile;
-    }
-
-    public UserStatus getUserStatus() {
-        return userStatus;
-    }
-
-    public void setUserStatus(UserStatus userStatus) {
-        this.userStatus = userStatus;
-    }
-
 }

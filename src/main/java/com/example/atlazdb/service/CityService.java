@@ -1,11 +1,11 @@
 package com.example.atlazdb.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 import com.example.atlazdb.dto.CityRequestDTO;
+import com.example.atlazdb.exception.ResourceNotFoundException;
 import com.example.atlazdb.model.City;
 import com.example.atlazdb.repository.CityRepository;
 
@@ -22,26 +22,29 @@ public class CityService {
         return repository.findAll();
     }
 
-    public Optional<City> findById(Long id) {
-        return repository.findById(id);
+    public City findById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("City not found"));
     }
 
     public City save(CityRequestDTO dto) {
         City city = new City();
-        city.setName(dto.getName());
-        city.setUf(dto.getUf());
+        apply(city, dto);
+        return repository.save(city);
+    }
+
+    public City update(Long id, CityRequestDTO dto) {
+        City city = findById(id);
+        apply(city, dto);
         return repository.save(city);
     }
 
     public void delete(Long id) {
-        repository.deleteById(id);
+        repository.delete(findById(id));
     }
 
-    public City update(Long id, CityRequestDTO dto) {
-        City city = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("City not found"));
+    private void apply(City city, CityRequestDTO dto) {
         city.setName(dto.getName());
         city.setUf(dto.getUf());
-        return repository.save(city);
     }
 }

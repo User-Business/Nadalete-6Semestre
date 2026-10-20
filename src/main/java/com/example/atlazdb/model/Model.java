@@ -1,11 +1,18 @@
 package com.example.atlazdb.model;
 
-import jakarta.persistence.*;
-import lombok.Data;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "modelo")
-@Data
+@Getter
+@Setter
 public class Model {
 
     @Id
@@ -18,24 +25,4 @@ public class Model {
 
     @Column(name = "nome_marca")
     private String brandName;
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getModelName() {
-        return modelName;
-    }
-
-    public void setModelName(String modelName) {
-        this.modelName = modelName;
-    }
-
-    public String getBrandName() {
-        return brandName;
-    }
-
-    public void setBrandName(String brandName) {
-        this.brandName = brandName;
-    }
 }

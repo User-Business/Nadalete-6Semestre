@@ -1,14 +1,25 @@
 package com.example.atlazdb.controller;
 
-import com.example.atlazdb.dto.VehicleRequestDTO;
-import com.example.atlazdb.dto.VehicleResponseDTO;
-import com.example.atlazdb.service.VehicleService;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import com.example.atlazdb.enums.VehicleStatus;
-
 import java.math.BigDecimal;
 import java.util.List;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.atlazdb.dto.VehicleRequestDTO;
+import com.example.atlazdb.dto.VehicleResponseDTO;
+import com.example.atlazdb.enums.VehicleStatus;
+import com.example.atlazdb.service.VehicleService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/vehicles")
@@ -31,19 +42,17 @@ public class VehicleController {
     }
 
     @GetMapping("/available/{userId}")
-    public List<VehicleResponseDTO> listAvailableVehicles(
-            @PathVariable Long userId
-    ) {
+    public List<VehicleResponseDTO> listAvailableVehicles(@PathVariable Long userId) {
         return service.findAvailableVehiclesByUser(userId);
     }
 
     @PostMapping
-    public ResponseEntity<VehicleResponseDTO> create(@RequestBody VehicleRequestDTO dto) {
+    public ResponseEntity<VehicleResponseDTO> create(@Valid @RequestBody VehicleRequestDTO dto) {
         return ResponseEntity.ok(service.save(dto));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<VehicleResponseDTO> update(@PathVariable Long id, @RequestBody VehicleRequestDTO dto) {
+    public ResponseEntity<VehicleResponseDTO> update(@PathVariable Long id, @Valid @RequestBody VehicleRequestDTO dto) {
         return ResponseEntity.ok(service.update(id, dto));
     }
 
@@ -60,15 +69,12 @@ public class VehicleController {
 
     @GetMapping("/{id}/average-consumption")
     public ResponseEntity<Double> getAverageConsumption(@PathVariable Long id) {
-        Double averageConsumption = service.calculateAverageConsumption(id);
-        return ResponseEntity.ok(averageConsumption);
+        return ResponseEntity.ok(service.calculateAverageConsumption(id));
     }
 
-    // VehicleController.java
     @PatchMapping("/{id}/km-troca-oleo")
-    public ResponseEntity<VehicleResponseDTO> atualizarKmTrocaOleo(
-            @PathVariable Long id,
-            @RequestBody BigDecimal kmTrocaOleo) {
-        return ResponseEntity.ok(service.atualizarKmTrocaOleo(id, kmTrocaOleo));
+    public ResponseEntity<VehicleResponseDTO> updateOilChangeKm(@PathVariable Long id,
+                                                                @RequestBody BigDecimal oilChangeKm) {
+        return ResponseEntity.ok(service.updateOilChangeKm(id, oilChangeKm));
     }
 }

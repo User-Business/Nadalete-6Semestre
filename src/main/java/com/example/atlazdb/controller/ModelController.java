@@ -1,11 +1,21 @@
 package com.example.atlazdb.controller;
 
-import com.example.atlazdb.dto.ModelRequestDTO;
-import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.atlazdb.dto.ModelRequestDTO;
 import com.example.atlazdb.model.Model;
 import com.example.atlazdb.service.ModelService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/models")
@@ -24,17 +34,17 @@ public class ModelController {
 
     @GetMapping("/{id}")
     public Model findById(@PathVariable Long id) {
-        return service.findById(id).orElse(null);
+        return service.findById(id);
     }
 
     @PostMapping
-    public Model create(@RequestBody ModelRequestDTO dto) {
+    public Model create(@Valid @RequestBody ModelRequestDTO dto) {
         return service.save(dto);
     }
 
     @PutMapping("/{id}")
-    public Model update(@PathVariable Long id, @RequestBody ModelRequestDTO model) {
-        return service.update(id,model);
+    public Model update(@PathVariable Long id, @Valid @RequestBody ModelRequestDTO dto) {
+        return service.update(id, dto);
     }
 
     @DeleteMapping("/{id}")

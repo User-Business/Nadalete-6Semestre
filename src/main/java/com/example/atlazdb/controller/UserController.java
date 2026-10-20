@@ -15,8 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.atlazdb.dto.UserRequestDTO;
 import com.example.atlazdb.dto.UserResponseDTO;
 import com.example.atlazdb.enums.UserStatus;
-import com.example.atlazdb.model.User;
 import com.example.atlazdb.service.UserService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/users")
@@ -31,33 +32,32 @@ public class UserController {
     @GetMapping
     public List<UserResponseDTO> list() {
         return service.listAll().stream()
-            .map(UserResponseDTO::new)
-            .toList();
+                .map(UserResponseDTO::new)
+                .toList();
     }
 
     @GetMapping("/{id}")
     public UserResponseDTO findById(@PathVariable Long id) {
-        return service.findById(id)
-            .map(UserResponseDTO::new)
-            .orElse(null);
+        return new UserResponseDTO(service.findById(id));
     }
-    
+
     @PostMapping
-    public User create(@RequestBody UserRequestDTO dto) {
-        return service.save(dto);
+    public UserResponseDTO create(@Valid @RequestBody UserRequestDTO dto) {
+        return new UserResponseDTO(service.save(dto));
     }
 
     @PutMapping("/{id}")
-    public User update(@PathVariable Long id, @RequestBody UserRequestDTO dto) {
-        return service.update(id,dto);
+    public UserResponseDTO update(@PathVariable Long id, @Valid @RequestBody UserRequestDTO dto) {
+        return new UserResponseDTO(service.update(id, dto));
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         service.delete(id);
     }
-    @GetMapping ("/user-status")
-    public ResponseEntity<UserStatus[]> getUserStatuses(){
+
+    @GetMapping("/user-status")
+    public ResponseEntity<UserStatus[]> getUserStatuses() {
         return ResponseEntity.ok(UserStatus.values());
     }
 }

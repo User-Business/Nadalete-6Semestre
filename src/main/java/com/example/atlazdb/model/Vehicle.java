@@ -1,16 +1,27 @@
 package com.example.atlazdb.model;
 
-import jakarta.persistence.*;
-import com.example.atlazdb.enums.*;
-import lombok.Data;
+import java.math.BigDecimal;
+
+import com.example.atlazdb.enums.CnhType;
+import com.example.atlazdb.enums.FuelType;
+import com.example.atlazdb.enums.VehicleStatus;
+import com.example.atlazdb.enums.VehicleType;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.math.BigDecimal;
-
 @Entity
 @Table(name = "viatura")
-@Data
 @Getter
 @Setter
 public class Vehicle {
@@ -34,7 +45,7 @@ public class Vehicle {
     @ManyToOne
     @JoinColumn(name = "id_modelo")
     private Model model;
-    
+
     @Column(name = "tipo_abastecimento", nullable = false)
     @Enumerated(EnumType.STRING)
     private FuelType fuelType;
@@ -48,5 +59,4 @@ public class Vehicle {
 
     @Column(name = "km_troca_oleo")
     private BigDecimal kmTrocaOleo;
-
 }

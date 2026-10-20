@@ -1,4 +1,4 @@
-package com.example.atlazdb.service;
+package com.example.atlazdb.exception;
 
 public class BusinessRuleException extends RuntimeException {
     public BusinessRuleException(String message) {

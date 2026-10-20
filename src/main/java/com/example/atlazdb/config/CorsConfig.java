@@ -12,8 +12,6 @@ public class CorsConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOrigins("http://localhost:5173",
                         "https://atlaz-front-end.vercel.app")
-                .allowedMethods("GET", "POST", "PUT", "DELETE");
-
+                .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE");
     }
-
 }

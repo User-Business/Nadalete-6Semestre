@@ -10,6 +10,6 @@ import java.util.Optional;
 public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
 
     Optional<Vehicle> findByPrefix(String prefix);
-    Integer countByVehicleStatus(VehicleStatus status);
+    long countByVehicleStatus(VehicleStatus status);
 
 }

@@ -8,6 +8,7 @@ import com.example.atlazdb.repository.projection.AtividadeProjection;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -15,9 +16,9 @@ public interface RefuelingRepository extends JpaRepository<Refueling, Long> {
 
     List<Refueling> findByFuelType(FuelType fuelType);
 
-    List<Refueling> findByTotalValueGreaterThan(Double totalValue);
+    List<Refueling> findByTotalValueGreaterThan(BigDecimal totalValue);
 
-    List<Refueling> findByCurrentKmGreaterThan(Double currentKm);
+    List<Refueling> findByCurrentKmGreaterThan(BigDecimal currentKm);
 
     List<Refueling> findByVehicleId(Long vehicleId);
 

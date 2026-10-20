@@ -1,30 +1,29 @@
 package com.example.atlazdb.controller;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.example.atlazdb.dto.LoginRequestDTO;
 import com.example.atlazdb.dto.LoginResponseDTO;
-import com.example.atlazdb.model.User;
-import com.example.atlazdb.repository.UserRepository;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import com.example.atlazdb.service.AuthService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
-    private final UserRepository userRepository;
+    private final AuthService authService;
 
-    public AuthController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public AuthController(AuthService authService) {
+        this.authService = authService;
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequestDTO dto) {
-        User user = userRepository.findByEmail(dto.getEmail()).orElse(null);
-
-        if (user == null || !user.getPasswordHash().equals(dto.getPassword())) {
-            return ResponseEntity.status(401).body("Credenciais inválidas");
-        }
-
-        return ResponseEntity.ok(new LoginResponseDTO(user.getId(), user.getProfile().name(), user.getName()));
+    public ResponseEntity<LoginResponseDTO> login(@Valid @RequestBody LoginRequestDTO dto) {
+        return ResponseEntity.ok(authService.login(dto));
     }
 }

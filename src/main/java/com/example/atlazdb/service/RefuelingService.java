@@ -1,15 +1,23 @@
 package com.example.atlazdb.service;
 
-import com.example.atlazdb.dto.RefuelingRequestDTO;
-import com.example.atlazdb.enums.FuelType;
-import com.example.atlazdb.model.*;
-import com.example.atlazdb.repository.*;
-import org.springframework.stereotype.Service;
-
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
-import java.util.Optional;
+
+import org.springframework.stereotype.Service;
+
+import com.example.atlazdb.dto.RefuelingRequestDTO;
+import com.example.atlazdb.enums.FuelType;
+import com.example.atlazdb.exception.ResourceNotFoundException;
+import com.example.atlazdb.model.Refueling;
+import com.example.atlazdb.model.ServiceOrder;
+import com.example.atlazdb.repository.CityRepository;
+import com.example.atlazdb.repository.RefuelingRepository;
+import com.example.atlazdb.repository.ServiceOrderRepository;
+import com.example.atlazdb.repository.UserRepository;
+import com.example.atlazdb.repository.VehicleRepository;
 
 @Service
 public class RefuelingService {
@@ -36,120 +44,77 @@ public class RefuelingService {
         return repository.findAll();
     }
 
-    public Optional<Refueling> findById(Long id) {
-        return repository.findById(id);
+    public Refueling findById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Refueling not found."));
     }
 
     public Refueling save(RefuelingRequestDTO dto) {
-        User user = userRepository.findById(dto.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found."));
-        Vehicle vehicle = vehicleRepository.findById(dto.getVehicleId())
-                .orElseThrow(() -> new RuntimeException("Vehicle not found."));
-        City city = cityRepository.findById(dto.getCityId())
-                .orElseThrow(() -> new RuntimeException("City not found."));
-
-        // serviceOrder é opcional
-        ServiceOrder serviceOrder = null;
-        if (dto.getServiceOrderId() != null) {
-            serviceOrder = serviceOrderRepository.findById(dto.getServiceOrderId())
-                    .orElseThrow(() -> new RuntimeException("Service order not found."));
-        }
-
         Refueling refueling = new Refueling();
-        refueling.setTotalValue(dto.getTotalValue());
-        refueling.setLiters(dto.getLiters());
-        refueling.setDateTime(dto.getDateTime());
-        refueling.setReceiptNumber(dto.getReceiptNumber());
-        refueling.setUser(user);
-        refueling.setVehicle(vehicle);
-        refueling.setCity(city);
-        refueling.setServiceOrder(serviceOrder);
-
-        // currentKm só se tiver OS com chegada registrada
-        if (serviceOrder != null && serviceOrder.getArrivalKm() != null) {
-            refueling.setCurrentKm(serviceOrder.getArrivalKm());
-        }
-
+        apply(refueling, dto);
         return repository.save(refueling);
-    }
-    
-    public void delete(Long id) {
-        repository.deleteById(id);
-    }
-
-    public List<Refueling> searchWithFilters(
-            FuelType fuelType,
-            Double totalValue,
-            Double currentKm
-    ) {
-
-        if (fuelType != null) {
-            return repository.findByFuelType(fuelType);
-        }
-
-        if (totalValue != null) {
-            return repository.findByTotalValueGreaterThan(totalValue);
-        }
-
-        if (currentKm != null) {
-            return repository.findByCurrentKmGreaterThan(currentKm);
-        }
-
-        return repository.findAll();
     }
 
     public Refueling update(Long id, RefuelingRequestDTO dto) {
-        User user = userRepository.findById(dto.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found."));
-        Vehicle vehicle = vehicleRepository.findById(dto.getVehicleId())
-                .orElseThrow(() -> new RuntimeException("Vehicle not found."));
-        City city = cityRepository.findById(dto.getCityId())
-                .orElseThrow(() -> new RuntimeException("City not found."));
-        Refueling refueling = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Refueling not found."));
-        ServiceOrder serviceOrder = null;
-        if (dto.getServiceOrderId() != null) {
-            serviceOrder = serviceOrderRepository.findById(dto.getServiceOrderId())
-                    .orElseThrow(() -> new RuntimeException("Service order not found."));
-        }
-
-        refueling.setTotalValue(dto.getTotalValue());
-        refueling.setCurrentKm(serviceOrder != null ? serviceOrder.getArrivalKm() : null);
-        refueling.setLiters(dto.getLiters());
-        refueling.setDateTime(dto.getDateTime());
-        refueling.setReceiptNumber(dto.getReceiptNumber());
-        refueling.setUser(user);
-        refueling.setVehicle(vehicle);
-        refueling.setCity(city);
-        refueling.setServiceOrder(serviceOrder);
-
-        if (serviceOrder != null && serviceOrder.getArrivalKm() != null) {
-            refueling.setCurrentKm(serviceOrder.getArrivalKm());
-        }
-
+        Refueling refueling = findById(id);
+        apply(refueling, dto);
         return repository.save(refueling);
     }
 
+    public void delete(Long id) {
+        repository.delete(findById(id));
+    }
+
+    public List<Refueling> searchWithFilters(FuelType fuelType, BigDecimal totalValue, BigDecimal currentKm) {
+        if (fuelType != null) {
+            return repository.findByFuelType(fuelType);
+        }
+        if (totalValue != null) {
+            return repository.findByTotalValueGreaterThan(totalValue);
+        }
+        if (currentKm != null) {
+            return repository.findByCurrentKmGreaterThan(currentKm);
+        }
+        return repository.findAll();
+    }
+
     public List<Refueling> findByMonthAndYear(int month, int year) {
-
         LocalDateTime start = LocalDateTime.of(year, month, 1, 0, 0);
-        LocalDateTime end = start.plusMonths(1);
-
-        return repository.findByPeriod(start, end);
+        return repository.findByPeriod(start, start.plusMonths(1));
     }
 
     public Long countRefuelingsByDateInterval(LocalDate startDate, LocalDate endDate) {
-        LocalDateTime startOfDay = startDate.atStartOfDay();
-        
-        LocalDateTime endOfDay = endDate.atTime(java.time.LocalTime.MAX);
-        
-        return repository.countByDateTimeBetween(startOfDay, endOfDay);
+        return repository.countByDateTimeBetween(startDate.atStartOfDay(), endDate.atTime(LocalTime.MAX));
     }
 
-    public List<Refueling> findByInterval(LocalDate dataInicio, LocalDate dataFim) {
-        LocalDateTime start = dataInicio.atStartOfDay();
-        LocalDateTime end = dataFim.atTime(23, 59, 59);
-        return repository.findByPeriod(start, end);
+    public List<Refueling> findByInterval(LocalDate startDate, LocalDate endDate) {
+        return repository.findByPeriod(startDate.atStartOfDay(), endDate.plusDays(1).atStartOfDay());
     }
 
+    private void apply(Refueling refueling, RefuelingRequestDTO dto) {
+        refueling.setUser(userRepository.findById(dto.getUserId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found.")));
+        refueling.setVehicle(vehicleRepository.findById(dto.getVehicleId())
+                .orElseThrow(() -> new ResourceNotFoundException("Vehicle not found.")));
+        refueling.setCity(cityRepository.findById(dto.getCityId())
+                .orElseThrow(() -> new ResourceNotFoundException("City not found.")));
+
+        // The service order is optional; the current km is only known when the trip is finished
+        ServiceOrder serviceOrder = findOptionalServiceOrder(dto.getServiceOrderId());
+        refueling.setServiceOrder(serviceOrder);
+        refueling.setCurrentKm(serviceOrder != null ? serviceOrder.getArrivalKm() : null);
+
+        refueling.setTotalValue(dto.getTotalValue());
+        refueling.setLiters(dto.getLiters());
+        refueling.setDateTime(dto.getDateTime());
+        refueling.setReceiptNumber(dto.getReceiptNumber());
+    }
+
+    private ServiceOrder findOptionalServiceOrder(Long serviceOrderId) {
+        if (serviceOrderId == null) {
+            return null;
+        }
+        return serviceOrderRepository.findById(serviceOrderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Service order not found."));
+    }
 }
