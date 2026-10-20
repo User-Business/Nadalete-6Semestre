@@ -1,0 +1,66 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Service order",
+  "type": "object",
+  "required": ["id", "serviceType", "destinationLocation", "justification", "requester", "departureKm",
+               "arrivalKm", "departureDate", "returnDate", "user", "vehicle"],
+  "additionalProperties": false,
+  "definitions": {
+    "dateTime": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d+)?)?$" },
+    "user": {
+      "type": "object",
+      "required": ["id", "name", "registration", "email", "profile", "userStatus"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "integer" },
+        "name": { "type": "string" },
+        "registration": { "type": "string" },
+        "email": { "type": "string" },
+        "profile": { "type": "string", "enum": ["ADMIN", "TECNICO"] },
+        "userStatus": { "type": "string", "enum": ["DISPONIVEL", "EM_CAMPO", "DESLIGADO"] },
+        "cnhTypes": { "type": ["array", "null"], "items": { "type": "string" } }
+      }
+    },
+    "vehicle": {
+      "type": "object",
+      "required": ["id", "prefix", "type", "vehicleStatus", "model", "fuelType", "km", "tipoCnhNecessaria"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "integer" },
+        "prefix": { "type": "string" },
+        "type": { "type": "string", "enum": ["UTILITARIO", "PASSEIO"] },
+        "vehicleStatus": { "type": "string", "enum": ["DISPONIVEL", "MANUTENCAO", "EM_USO", "DESATIVADA"] },
+        "model": {
+          "type": "object",
+          "required": ["id", "modelName", "brandName"],
+          "properties": {
+            "id": { "type": "integer" },
+            "modelName": { "type": "string" },
+            "brandName": { "type": "string" }
+          }
+        },
+        "fuelType": { "type": "string" },
+        "km": { "type": "number" },
+        "tipoCnhNecessaria": { "type": "string", "enum": ["A", "B", "C", "D", "E"] },
+        "kmTrocaOleo": { "type": ["number", "null"] }
+      }
+    }
+  },
+  "properties": {
+    "id": { "type": "integer", "minimum": 1 },
+    "serviceType": {
+      "type": "string",
+      "enum": ["ADMINISTRATIVO", "AUDITORIA", "ENSAIO", "FISCALIZACAO", "INSPECAO", "INSPETORIA", "JURIDICO",
+               "OFICINA", "SUPERVISAO", "TRANSLADO", "VERIFICACAO"]
+    },
+    "destinationLocation": { "type": ["string", "null"] },
+    "justification": { "type": ["string", "null"] },
+    "requester": { "type": ["string", "null"] },
+    "departureKm": { "type": "number", "minimum": 0 },
+    "arrivalKm": { "type": ["number", "null"] },
+    "departureDate": { "$ref": "#/definitions/dateTime" },
+    "returnDate": { "oneOf": [{ "$ref": "#/definitions/dateTime" }, { "type": "null" }] },
+    "user": { "$ref": "#/definitions/user" },
+    "vehicle": { "$ref": "#/definitions/vehicle" }
+  }
+}

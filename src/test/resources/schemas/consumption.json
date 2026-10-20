@@ -1,0 +1,6 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Average consumption in km per liter",
+  "type": "number",
+  "minimum": 0
+}

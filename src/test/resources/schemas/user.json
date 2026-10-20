@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "User response (the password must never be exposed)",
+  "type": "object",
+  "required": ["id", "name", "registrationNumber", "email", "profile", "userStatus", "cnhTypes"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "integer", "minimum": 1 },
+    "name": { "type": "string", "minLength": 1 },
+    "registrationNumber": { "type": "string", "minLength": 1 },
+    "email": { "type": "string", "minLength": 3 },
+    "profile": { "type": "string", "enum": ["ADMIN", "TECNICO"] },
+    "userStatus": { "type": "string", "enum": ["DISPONIVEL", "EM_CAMPO", "DESLIGADO"] },
+    "cnhTypes": {
+      "type": ["array", "null"],
+      "items": { "type": "string", "enum": ["A", "B", "C", "D", "E"] },
+      "uniqueItems": true
+    }
+  }
+}

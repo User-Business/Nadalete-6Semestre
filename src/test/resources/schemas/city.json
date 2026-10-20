@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "City",
+  "type": "object",
+  "required": ["id", "name", "uf"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "integer", "minimum": 1 },
+    "name": { "type": "string", "minLength": 1, "maxLength": 100 },
+    "uf": { "type": "string", "minLength": 2, "maxLength": 2 }
+  }
+}

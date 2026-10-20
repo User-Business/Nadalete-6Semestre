@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Vehicle response",
+  "type": "object",
+  "required": ["id", "prefix", "model", "brand", "status", "fuelType", "type", "km", "modelId",
+               "tipoCnhNecessaria", "kmTrocaOleo"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "integer", "minimum": 1 },
+    "prefix": { "type": "string", "minLength": 1 },
+    "model": { "type": "string" },
+    "brand": { "type": "string" },
+    "status": { "type": "string", "enum": ["DISPONIVEL", "MANUTENCAO", "EM_USO", "DESATIVADA"] },
+    "fuelType": { "type": "string", "enum": ["GASOLINA", "ETANOL", "DIESEL", "GNV", "FLEX"] },
+    "type": { "type": "string", "enum": ["UTILITARIO", "PASSEIO"] },
+    "km": { "type": "number", "minimum": 0 },
+    "modelId": { "type": "integer", "minimum": 1 },
+    "tipoCnhNecessaria": { "type": "string", "enum": ["A", "B", "C", "D", "E"] },
+    "kmTrocaOleo": { "type": ["number", "null"] }
+  }
+}

@@ -7,11 +7,13 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import com.example.atlazdb.dto.ErrorResponseDTO;
 
@@ -55,6 +57,16 @@ public class GlobalExceptionHandler {
     })
     public ResponseEntity<ErrorResponseDTO> handleBadRequest() {
         return build(HttpStatus.BAD_REQUEST, "Invalid request parameters or body");
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ErrorResponseDTO> handleUnknownResource() {
+        return build(HttpStatus.NOT_FOUND, "Resource not found");
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ErrorResponseDTO> handleMethodNotAllowed() {
+        return build(HttpStatus.METHOD_NOT_ALLOWED, "HTTP method not supported for this resource");
     }
 
     private ResponseEntity<ErrorResponseDTO> build(HttpStatus status, String message) {

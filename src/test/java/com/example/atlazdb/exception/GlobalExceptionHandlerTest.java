@@ -51,6 +51,17 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
+    void shouldMapUnknownResourceTo404() {
+        assertError(handler.handleUnknownResource(), HttpStatus.NOT_FOUND, "Resource not found");
+    }
+
+    @Test
+    void shouldMapUnsupportedHttpMethodTo405() {
+        assertError(handler.handleMethodNotAllowed(), HttpStatus.METHOD_NOT_ALLOWED,
+                "HTTP method not supported for this resource");
+    }
+
+    @Test
     void shouldListInvalidFieldsSortedByName() throws NoSuchMethodException {
         BeanPropertyBindingResult result = new BeanPropertyBindingResult(new CityRequestDTO(), "city");
         result.addError(new FieldError("city", "uf", "size must be between 2 and 2"));

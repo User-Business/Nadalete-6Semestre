@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Login response",
+  "type": "object",
+  "required": ["id", "profile", "name"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "integer", "minimum": 1 },
+    "profile": { "type": "string", "enum": ["ADMIN", "TECNICO"] },
+    "name": { "type": "string", "minLength": 1 }
+  }
+}

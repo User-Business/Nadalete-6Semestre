@@ -34,6 +34,8 @@
 		<!-- Test switches: unit tests run by default, system (E2E) tests on demand -->
 		<skipUnitTests>false</skipUnitTests>
 		<skipSystemTests>true</skipSystemTests>
+		<!-- Filled by the JaCoCo agent; empty default keeps @{argLine} valid when the agent is skipped -->
+		<argLine/>
 
 		<!-- SonarCloud -->
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
@@ -88,6 +90,32 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<!-- System (E2E) tests -->
+		<dependency>
+			<groupId>io.rest-assured</groupId>
+			<artifactId>rest-assured</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.rest-assured</groupId>
+			<artifactId>json-schema-validator</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-testcontainers</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>postgresql</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -131,6 +159,8 @@
 				<artifactId>maven-failsafe-plugin</artifactId>
 				<configuration>
 					<skipTests>${skipSystemTests}</skipTests>
+					<!-- Fixed locale keeps validation messages deterministic on any machine -->
+					<argLine>@{argLine} -Duser.language=en -Duser.country=US</argLine>
 					<includes>
 						<include>**/*IT.java</include>
 					</includes>

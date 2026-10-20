@@ -1,0 +1,53 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Dashboard",
+  "type": "object",
+  "required": ["data"],
+  "additionalProperties": false,
+  "properties": {
+    "data": {
+      "type": "object",
+      "required": ["metrics", "vehicleKm", "todayActivities"],
+      "additionalProperties": false,
+      "properties": {
+        "metrics": {
+          "type": "object",
+          "required": ["activeVehicles", "totalVehicles", "techniciansInField", "averageConsum", "todayExpense"],
+          "additionalProperties": false,
+          "properties": {
+            "activeVehicles": { "type": "integer", "minimum": 0 },
+            "totalVehicles": { "type": "integer", "minimum": 0 },
+            "techniciansInField": { "type": "integer", "minimum": 0 },
+            "averageConsum": { "type": "number", "minimum": 0 },
+            "todayExpense": { "type": "number", "minimum": 0 }
+          }
+        },
+        "vehicleKm": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["prefix", "km"],
+            "properties": { "prefix": { "type": "string" }, "km": { "type": "integer" } }
+          }
+        },
+        "todayActivities": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "type", "vehiclePrefix", "technicianName", "description", "status", "statusColor"],
+            "additionalProperties": false,
+            "properties": {
+              "id": { "type": "integer" },
+              "type": { "type": "string", "enum": ["DESLOCAMENTO", "ABASTECIMENTO"] },
+              "vehiclePrefix": { "type": "string" },
+              "technicianName": { "type": "string" },
+              "description": { "type": ["string", "null"] },
+              "status": { "type": "string", "enum": ["CONCLUÍDO", "EM ANDAMENTO"] },
+              "statusColor": { "type": "string", "enum": ["EMERALD", "AMBER"] }
+            }
+          }
+        }
+      }
+    }
+  }
+}

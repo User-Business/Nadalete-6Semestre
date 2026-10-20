@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Vehicle model",
+  "type": "object",
+  "required": ["id", "modelName", "brandName"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "integer", "minimum": 1 },
+    "modelName": { "type": "string", "minLength": 1 },
+    "brandName": { "type": "string", "minLength": 1 }
+  }
+}
